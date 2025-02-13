@@ -30,7 +30,9 @@ class KpiScoreCateg(models.Model):
                 min_score = min(record.range_ids.mapped("min_value"))
                 min_score_id = record.range_ids.filtered(
                     lambda x: x.min_value == min_score
-                ).id
+                )[0]
+                if min_score_id:
+                    min_score_id = min_score_id.id
             record.min_range_value_id = min_score_id
 
     min_range_value_id = fields.Many2one(
@@ -52,7 +54,9 @@ class KpiScoreCateg(models.Model):
                 max_score = max(record.range_ids.mapped("max_value"))
                 max_score_id = record.range_ids.filtered(
                     lambda x: x.max_value == max_score
-                ).id
+                )[0]
+                if max_score_id:
+                    max_score_id = max_score_id.id
             record.max_range_value_id = max_score_id
 
     max_range_value_id = fields.Many2one(
