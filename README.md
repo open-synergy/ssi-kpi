@@ -18,7 +18,7 @@ Available addons
 ----------------
 addon | version | maintainers | summary
 --- | --- | --- | ---
-[ssi_kpi](ssi_kpi/) | 14.0.1.0.0 |  | HR - Key Perfomance Indicator (KPI)
+[ssi_kpi](ssi_kpi/) | 14.0.1.0.1 |  | HR - Key Perfomance Indicator (KPI)
 
 [//]: # (end addons)
 
