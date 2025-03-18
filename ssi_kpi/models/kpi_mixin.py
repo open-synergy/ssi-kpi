@@ -139,7 +139,7 @@ class MixinKPI(models.AbstractModel):
         copy=True,
     )
     appraisal_ids = fields.One2many(
-        string="Appraisals",
+        string="Appraisal Lines",
         comodel_name="mixin.kpi_appraisal",
         inverse_name="kpi_id",
     )
@@ -371,26 +371,11 @@ class MixinKPI(models.AbstractModel):
             if not record._check_overlap():
                 error_message = _(
                     """
-                Context: Change date start or date end on overtime request
+                Context: Constrains
                 Database ID: %s
-                Problem: There are other KPI(s) that overlap
+                Problem: There are other KPI that overlap
                 Solution: Change date start and date end
                 """
                     % (record.id)
                 )
                 raise UserError(error_message)
-
-    def _check_overlap(self):
-        self.ensure_one()
-        result = True
-        criteria = [
-            ("state", "not in", ["cancel", "reject"]),
-            ("id", "!=", self.id),
-            ("date_start", "<=", self.date_end),
-            ("date_end", ">=", self.date_start),
-        ]
-        check = self.search_count(criteria)
-        if check > 0:
-            result = False
-
-        return result

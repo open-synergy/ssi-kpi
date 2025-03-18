@@ -13,7 +13,7 @@ class KpiDepartment(models.Model):
     department_id = fields.Many2one(
         string="Department",
         comodel_name="hr.department",
-        required=False,
+        required=True,
         readonly=True,
         states={"draft": [("readonly", False)]},
     )
@@ -26,6 +26,22 @@ class KpiDepartment(models.Model):
     appraisal_ids = fields.One2many(
         comodel_name="kpi.department_appraisal",
     )
+
+    def _check_overlap(self):
+        self.ensure_one()
+        result = True
+        criteria = [
+            ("state", "not in", ["cancel", "reject"]),
+            ("id", "!=", self.id),
+            ("department_id", "=", self.department_id.id),
+            ("date_start", "<=", self.date_end),
+            ("date_end", ">=", self.date_start),
+        ]
+        check = self.search_count(criteria)
+        if check > 0:
+            result = False
+
+        return result
 
 
 class KpiDepartmentLine(models.Model):
