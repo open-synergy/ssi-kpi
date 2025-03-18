@@ -23,7 +23,7 @@ class KpiEmployee(models.Model):
         string="Employee",
         comodel_name="hr.employee",
         default=lambda self: self._default_employee_id(),
-        required=False,
+        required=True,
         readonly=True,
         states={"draft": [("readonly", False)]},
     )
@@ -34,6 +34,22 @@ class KpiEmployee(models.Model):
     appraisal_ids = fields.One2many(
         comodel_name="kpi.employee_appraisal",
     )
+
+    def _check_overlap(self):
+        self.ensure_one()
+        result = True
+        criteria = [
+            ("state", "not in", ["cancel", "reject"]),
+            ("id", "!=", self.id),
+            ("employee_id", "=", self.employee_id.id),
+            ("date_start", "<=", self.date_end),
+            ("date_end", ">=", self.date_start),
+        ]
+        check = self.search_count(criteria)
+        if check > 0:
+            result = False
+
+        return result
 
 
 class KPIEmployeeLine(models.Model):
