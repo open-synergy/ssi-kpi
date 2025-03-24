@@ -119,7 +119,7 @@
     <field
             name="name"
         >KPI Employee Appraisal - Responsible to all subordinate data</field>
-    <field name="model_id" ref="model_kpi_employee" />
+    <field name="model_id" ref="model_kpi_employee_appraisal" />
     <field
             name="groups"
             eval="[(4, ref('kpi_employee_appraisal_direct_all_subordinate_group'))]"
@@ -133,7 +133,7 @@
 
 <record id="kpi_employee_appraisal_company_rule" model="ir.rule">
     <field name="name">KPI Employee Appraisal - Responsible to company data</field>
-    <field name="model_id" ref="model_kpi_employee" />
+    <field name="model_id" ref="model_kpi_employee_appraisal" />
     <field name="groups" eval="[(4, ref('kpi_employee_appraisal_company_group'))]" />
     <field name="domain_force">[('company_id','=',user.company_id.id)]</field>
     <field name="perm_unlink" eval="1" />
@@ -146,7 +146,7 @@
     <field
             name="name"
         >KPI Employee Appraisal - Responsible to company and all child companies data</field>
-    <field name="model_id" ref="model_kpi_employee" />
+    <field name="model_id" ref="model_kpi_employee_appraisal" />
     <field
             name="groups"
             eval="[(4, ref('kpi_employee_appraisal_company_child_group'))]"
@@ -160,7 +160,7 @@
 
 <record id="kpi_employee_appraisal_all_rule" model="ir.rule">
     <field name="name">KPI Employee Appraisal - Responsible to all data</field>
-    <field name="model_id" ref="model_kpi_employee" />
+    <field name="model_id" ref="model_kpi_employee_appraisal" />
     <field name="groups" eval="[(4, ref('kpi_employee_appraisal_all_group'))]" />
     <field name="domain_force">[(1,'=',1)]</field>
     <field name="perm_unlink" eval="1" />
@@ -252,7 +252,7 @@
 <!-- KPI DEPARTMENT Appraisal -->
 <record id="kpi_department_appraisal_internal_user_rule" model="ir.rule">
     <field name="name">KPI Department Appraisal - Responsible to own data</field>
-    <field name="model_id" ref="model_kpi_department" />
+    <field name="model_id" ref="model_kpi_department_appraisal" />
     <field name="groups" eval="[(4, ref('base.group_user'))]" />
     <field name="domain_force">[
       '|',
