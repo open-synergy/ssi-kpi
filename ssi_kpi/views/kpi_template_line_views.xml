@@ -98,7 +98,7 @@
                             name="score_range_ids"
                             attrs="{'invisible': [('score_method', '&lt;&gt;', 'range')]}"
                         >
-                            <tree string="Score Ranges" editable="top">
+                            <tree editable="top">
                                 <field name="min_value" />
                                 <field name="max_value" />
                                 <field name="score" />

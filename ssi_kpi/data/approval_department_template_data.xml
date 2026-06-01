@@ -2,8 +2,7 @@
 <!-- Copyright 2025 OpenSynergy Indonesia
      Copyright 2025 PT. Simetri Sinergi Indonesia
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
-<odoo>
-<data noupdate="1">
+<odoo noupdate="1">
 <!-- DEPARTMENT -->
 <record id="kpi_department_approval_template" model="approval.template">
     <field name="name">Standard</field>
@@ -16,9 +15,9 @@
     <field name="template_id" ref="kpi_department_approval_template" />
     <field name="approver_selection_method">use_group</field>
     <field
-                name="approver_group_ids"
-                eval="[(6,0,[ref('kpi_department_validator_group')])]"
-            />
+            name="approver_group_ids"
+            eval="[(6,0,[ref('kpi_department_validator_group')])]"
+        />
 </record>
 <record id="kpi_department_appraisal_approval_template" model="approval.template">
     <field name="name">Standard</field>
@@ -28,15 +27,14 @@
     <field name="validate_sequence" eval="1" />
 </record>
 <record
-            id="kpi_department_appraisal_approval_template_detail"
-            model="approval.template_detail"
-        >
+        id="kpi_department_appraisal_approval_template_detail"
+        model="approval.template_detail"
+    >
     <field name="template_id" ref="kpi_department_appraisal_approval_template" />
     <field name="approver_selection_method">use_group</field>
     <field
-                name="approver_group_ids"
-                eval="[(6,0,[ref('kpi_department_appraisal_user_group')])]"
-            />
+            name="approver_group_ids"
+            eval="[(6,0,[ref('kpi_department_appraisal_user_group')])]"
+        />
 </record>
-</data>
 </odoo>
