@@ -1,0 +1,860 @@
+scenarios:
+  - name: "KPI Item - Create"
+    steps:
+      - step: "Create KPI item"
+        action: "create"
+        model: "kpi_item"
+        save_as: "kpi_item"
+        values:
+          name: "Test KPI Item"
+          code: "TKPI001"
+
+      - step: "Assert KPI item created"
+        action: "assert"
+        target: "kpi_item"
+        asserts:
+          id:
+            type: "value"
+            operator: "is_truthy"
+          name:
+            type: "value"
+            expected: "Test KPI Item"
+          code:
+            type: "value"
+            expected: "TKPI001"
+          active:
+            type: "value"
+            expected: true
+
+  - name: "KPI Item - Edit"
+    steps:
+      - step: "Create KPI item"
+        action: "create"
+        model: "kpi_item"
+        save_as: "kpi_item"
+        values:
+          name: "KPI Item Before Edit"
+          code: "TKPI002"
+
+      - step: "Edit KPI item name"
+        action: "write"
+        target: "kpi_item"
+        values:
+          name: "KPI Item After Edit"
+
+      - step: "Assert name updated"
+        action: "assert"
+        target: "kpi_item"
+        asserts:
+          name:
+            type: "value"
+            expected: "KPI Item After Edit"
+
+  - name: "KPI Item - Delete"
+    steps:
+      - step: "Create KPI item"
+        action: "create"
+        model: "kpi_item"
+        save_as: "kpi_item"
+        values:
+          name: "KPI Item To Delete"
+          code: "TKPI003"
+
+      - step: "Delete KPI item"
+        action: "call"
+        target: "kpi_item"
+        method: "unlink"
+
+      - step: "Verify deleted"
+        action: "search"
+        model: "kpi_item"
+        domain: [["code", "=", "TKPI003"]]
+        save_as: "result"
+        expect_count: 0
+
+  - name: "KPI Score Category Range Value - CRUD"
+    steps:
+      - step: "Create range value"
+        action: "create"
+        model: "kpi_score_categ_range_value"
+        save_as: "range_value"
+        values:
+          name: "Excellent"
+          code: "TRVAL001"
+
+      - step: "Assert range value created"
+        action: "assert"
+        target: "range_value"
+        asserts:
+          id:
+            type: "value"
+            operator: "is_truthy"
+          name:
+            type: "value"
+            expected: "Excellent"
+
+      - step: "Edit range value name"
+        action: "write"
+        target: "range_value"
+        values:
+          name: "Outstanding"
+
+      - step: "Assert name updated"
+        action: "assert"
+        target: "range_value"
+        asserts:
+          name:
+            type: "value"
+            expected: "Outstanding"
+
+      - step: "Delete range value"
+        action: "call"
+        target: "range_value"
+        method: "unlink"
+
+      - step: "Verify deleted"
+        action: "search"
+        model: "kpi_score_categ_range_value"
+        domain: [["code", "=", "TRVAL001"]]
+        save_as: "result"
+        expect_count: 0
+
+  - name: "KPI Score Category - Create with Ranges"
+    steps:
+      - step: "Create score range value - Good"
+        action: "create"
+        model: "kpi_score_categ_range_value"
+        save_as: "rv_good"
+        values:
+          name: "Good"
+          code: "TRVGOOD"
+
+      - step: "Create score range value - Excellent"
+        action: "create"
+        model: "kpi_score_categ_range_value"
+        save_as: "rv_excellent"
+        values:
+          name: "Excellent"
+          code: "TRVEXC"
+
+      - step: "Create score category with ranges"
+        action: "create"
+        model: "kpi_score_categ"
+        save_as: "score_categ"
+        values:
+          name: "Test Score Category"
+          code: "TSCATEG001"
+          range_ids:
+            - - 0
+              - 0
+              - min_value: 0.0
+                max_value: 79.99
+                categ_range_value_id: "EVAL: registry['rv_good'].id"
+            - - 0
+              - 0
+              - min_value: 80.0
+                max_value: 100.0
+                categ_range_value_id: "EVAL: registry['rv_excellent'].id"
+
+      - step: "Assert score category created"
+        action: "assert"
+        target: "score_categ"
+        asserts:
+          id:
+            type: "value"
+            operator: "is_truthy"
+          name:
+            type: "value"
+            expected: "Test Score Category"
+          range_ids:
+            type: "o2m"
+            check: "count"
+            expected_count: 2
+
+      - step: "Assert min range value computed"
+        action: "assert"
+        target: "score_categ"
+        asserts:
+          min_range_value_id:
+            type: "value"
+            operator: "is_truthy"
+          max_range_value_id:
+            type: "value"
+            operator: "is_truthy"
+
+  - name: "KPI Template - Create with Lines"
+    steps:
+      - step: "Create KPI item for template"
+        action: "create"
+        model: "kpi_item"
+        save_as: "kpi_item"
+        values:
+          name: "Productivity"
+          code: "TITEM_TPL"
+
+      - step: "Create KPI template"
+        action: "create"
+        model: "kpi_template"
+        save_as: "template"
+        values:
+          name: "Test Template"
+          code: "TTPL001"
+          type: "employee"
+          appraisal_selection_method: "use_user"
+          line_ids:
+            - - 0
+              - 0
+              - kpi_item_id: "EVAL: registry['kpi_item'].id"
+                weight: 100.0
+                target: 100.0
+                realization_method: "user"
+                score_method: "higher"
+
+      - step: "Assert template created with lines"
+        action: "assert"
+        target: "template"
+        asserts:
+          id:
+            type: "value"
+            operator: "is_truthy"
+          name:
+            type: "value"
+            expected: "Test Template"
+          amount_weight:
+            type: "value"
+            expected: 100.0
+          line_ids:
+            type: "o2m"
+            check: "count"
+            expected_count: 1
+
+  - name: "KPI Employee - Full Workflow"
+    steps:
+      - step: "Create employee"
+        action: "create"
+        model: "hr.employee"
+        save_as: "employee"
+        values:
+          name: "Test Employee KPI"
+
+      - step: "Create KPI item"
+        action: "create"
+        model: "kpi_item"
+        save_as: "kpi_item"
+        values:
+          name: "Attendance"
+          code: "TITEMP001"
+
+      - step: "Create score range value"
+        action: "create"
+        model: "kpi_score_categ_range_value"
+        save_as: "rv_avg"
+        values:
+          name: "Average"
+          code: "TRVAVG"
+
+      - step: "Create score category"
+        action: "create"
+        model: "kpi_score_categ"
+        save_as: "score_categ"
+        values:
+          name: "Employee Score Category"
+          code: "TESCATEG"
+          range_ids:
+            - - 0
+              - 0
+              - min_value: 0.0
+                max_value: 100.0
+                categ_range_value_id: "EVAL: registry['rv_avg'].id"
+
+      - step: "Create KPI template with admin user"
+        action: "create"
+        model: "kpi_template"
+        save_as: "template"
+        values:
+          name: "Employee Template"
+          code: "TETPL001"
+          type: "employee"
+          appraisal_selection_method: "use_user"
+          kpi_score_categ_id: "EVAL: registry['score_categ'].id"
+          user_ids:
+            - - 4
+              - "EVAL: env.ref('base.user_admin').id"
+          line_ids:
+            - - 0
+              - 0
+              - kpi_item_id: "EVAL: registry['kpi_item'].id"
+                weight: 100.0
+                target: 100.0
+                realization_method: "user"
+                score_method: "higher"
+
+      - step: "Create KPI employee in draft"
+        action: "create"
+        model: "kpi.employee"
+        save_as: "kpi_employee"
+        as_user: "base.user_admin"
+        values:
+          employee_id: "EVAL: registry['employee'].id"
+          kpi_template_id: "EVAL: registry['template'].id"
+          date_start: 2026-01-01
+          date_end: 2026-12-31
+
+      - step: "Assert KPI employee created in draft"
+        action: "assert"
+        target: "kpi_employee"
+        asserts:
+          state:
+            type: "value"
+            expected: "draft"
+
+      - step: "Populate KPI from template"
+        action: "call"
+        target: "kpi_employee"
+        method: "action_populate_kpi"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate cache after populate"
+        action: "call"
+        target: "kpi_employee"
+        method: "invalidate_cache"
+
+      - step: "Assert lines and weight populated"
+        action: "assert"
+        target: "kpi_employee"
+        asserts:
+          amount_weight:
+            type: "value"
+            expected: 100.0
+          line_ids:
+            type: "o2m"
+            check: "count"
+            expected_count: 1
+          user_ids:
+            type: "value"
+            operator: "is_truthy"
+
+      - step: "Confirm KPI employee"
+        action: "call"
+        target: "kpi_employee"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
+
+      - step: "Invalidate cache after confirm"
+        action: "call"
+        target: "kpi_employee"
+        method: "invalidate_cache"
+
+      - step: "Approve KPI employee"
+        action: "call"
+        target: "kpi_employee"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+        asserts:
+          state:
+            type: "value"
+            expected: "open"
+
+      - step: "Invalidate cache after approve"
+        action: "call"
+        target: "kpi_employee"
+        method: "invalidate_cache"
+
+      - step: "Assert appraisals created"
+        action: "assert"
+        target: "kpi_employee"
+        asserts:
+          appraisal_ids:
+            type: "o2m"
+            check: "count"
+            expected_count: 1
+
+      - step: "Get appraisal"
+        action: "search"
+        model: "kpi.employee_appraisal"
+        domain:
+          - ["kpi_id", "=", "EVAL: registry['kpi_employee'].id"]
+        save_as: "appraisal"
+        limit: 1
+
+      - step: "Assert appraisal in draft"
+        action: "assert"
+        target: "appraisal"
+        asserts:
+          state:
+            type: "value"
+            expected: "draft"
+
+      - step: "Invalidate cache before appraisal confirm"
+        action: "call"
+        target: "appraisal"
+        method: "invalidate_cache"
+
+      - step: "Confirm appraisal (auto-approves and done)"
+        action: "call"
+        target: "appraisal"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+        context:
+          bypass_policy_check: true
+
+      - step: "Invalidate cache after appraisal confirm"
+        action: "call"
+        target: "appraisal"
+        method: "invalidate_cache"
+
+      - step: "Assert appraisal done"
+        action: "assert"
+        target: "appraisal"
+        asserts:
+          state:
+            type: "value"
+            expected: "done"
+
+      - step: "Invalidate KPI cache before done"
+        action: "call"
+        target: "kpi_employee"
+        method: "invalidate_cache"
+
+      - step: "Mark KPI employee as done"
+        action: "call"
+        target: "kpi_employee"
+        method: "action_done"
+        as_user: "base.user_admin"
+        context:
+          bypass_policy_check: true
+        asserts:
+          state:
+            type: "value"
+            expected: "done"
+
+      - step: "Invalidate cache after done"
+        action: "call"
+        target: "kpi_employee"
+        method: "invalidate_cache"
+
+      - step: "Assert KPI result computed"
+        action: "assert"
+        target: "kpi_employee"
+        asserts:
+          kpi_result:
+            type: "value"
+            operator: "is_truthy"
+
+  - name: "KPI Department - Full Workflow"
+    steps:
+      - step: "Create department"
+        action: "create"
+        model: "hr.department"
+        save_as: "department"
+        values:
+          name: "Test Department KPI"
+
+      - step: "Create KPI item"
+        action: "create"
+        model: "kpi_item"
+        save_as: "kpi_item"
+        values:
+          name: "Team Performance"
+          code: "TITEMDEPT001"
+
+      - step: "Create score range value"
+        action: "create"
+        model: "kpi_score_categ_range_value"
+        save_as: "rv_dept"
+        values:
+          name: "Good"
+          code: "TRVDEPT"
+
+      - step: "Create score category"
+        action: "create"
+        model: "kpi_score_categ"
+        save_as: "score_categ"
+        values:
+          name: "Department Score Category"
+          code: "TDSCATEG"
+          range_ids:
+            - - 0
+              - 0
+              - min_value: 0.0
+                max_value: 100.0
+                categ_range_value_id: "EVAL: registry['rv_dept'].id"
+
+      - step: "Create KPI department with lines"
+        action: "create"
+        model: "kpi.department"
+        save_as: "kpi_dept"
+        as_user: "base.user_admin"
+        values:
+          department_id: "EVAL: registry['department'].id"
+          kpi_score_categ_id: "EVAL: registry['score_categ'].id"
+          date_start: 2026-01-01
+          date_end: 2026-12-31
+          user_ids:
+            - - 4
+              - "EVAL: env.ref('base.user_admin').id"
+          line_ids:
+            - - 0
+              - 0
+              - kpi_item_id: "EVAL: registry['kpi_item'].id"
+                weight: 100.0
+                target: 100.0
+                realization_method: "user"
+                score_method: "higher"
+
+      - step: "Assert KPI department in draft"
+        action: "assert"
+        target: "kpi_dept"
+        asserts:
+          state:
+            type: "value"
+            expected: "draft"
+          amount_weight:
+            type: "value"
+            expected: 100.0
+
+      - step: "Confirm KPI department"
+        action: "call"
+        target: "kpi_dept"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
+
+      - step: "Invalidate cache after confirm"
+        action: "call"
+        target: "kpi_dept"
+        method: "invalidate_cache"
+
+      - step: "Approve KPI department"
+        action: "call"
+        target: "kpi_dept"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+        asserts:
+          state:
+            type: "value"
+            expected: "open"
+
+      - step: "Invalidate cache after approve"
+        action: "call"
+        target: "kpi_dept"
+        method: "invalidate_cache"
+
+      - step: "Get department appraisal"
+        action: "search"
+        model: "kpi.department_appraisal"
+        domain:
+          - ["kpi_id", "=", "EVAL: registry['kpi_dept'].id"]
+        save_as: "appraisal"
+        limit: 1
+
+      - step: "Invalidate cache before appraisal confirm"
+        action: "call"
+        target: "appraisal"
+        method: "invalidate_cache"
+
+      - step: "Confirm department appraisal"
+        action: "call"
+        target: "appraisal"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+        context:
+          bypass_policy_check: true
+
+      - step: "Invalidate cache after appraisal confirm"
+        action: "call"
+        target: "appraisal"
+        method: "invalidate_cache"
+
+      - step: "Assert appraisal done"
+        action: "assert"
+        target: "appraisal"
+        asserts:
+          state:
+            type: "value"
+            expected: "done"
+
+      - step: "Invalidate KPI cache before done"
+        action: "call"
+        target: "kpi_dept"
+        method: "invalidate_cache"
+
+      - step: "Mark KPI department as done"
+        action: "call"
+        target: "kpi_dept"
+        method: "action_done"
+        as_user: "base.user_admin"
+        context:
+          bypass_policy_check: true
+        asserts:
+          state:
+            type: "value"
+            expected: "done"
+
+      - step: "Invalidate cache after done"
+        action: "call"
+        target: "kpi_dept"
+        method: "invalidate_cache"
+
+      - step: "Assert KPI result computed"
+        action: "assert"
+        target: "kpi_dept"
+        asserts:
+          kpi_result:
+            type: "value"
+            operator: "is_truthy"
+
+  - name: "KPI Employee - Cancel Workflow"
+    steps:
+      - step: "Create employee"
+        action: "create"
+        model: "hr.employee"
+        save_as: "employee"
+        values:
+          name: "Test Employee KPI Cancel"
+
+      - step: "Create KPI item"
+        action: "create"
+        model: "kpi_item"
+        save_as: "kpi_item"
+        values:
+          name: "Quality"
+          code: "TITEMCANCEL"
+
+      - step: "Create KPI employee"
+        action: "create"
+        model: "kpi.employee"
+        save_as: "kpi_employee"
+        as_user: "base.user_admin"
+        values:
+          employee_id: "EVAL: registry['employee'].id"
+          date_start: 2026-01-01
+          date_end: 2026-12-31
+          user_ids:
+            - - 4
+              - "EVAL: env.ref('base.user_admin').id"
+          line_ids:
+            - - 0
+              - 0
+              - kpi_item_id: "EVAL: registry['kpi_item'].id"
+                weight: 100.0
+                target: 100.0
+                realization_method: "user"
+                score_method: "higher"
+
+      - step: "Confirm KPI employee"
+        action: "call"
+        target: "kpi_employee"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate cache after confirm"
+        action: "call"
+        target: "kpi_employee"
+        method: "invalidate_cache"
+
+      - step: "Approve KPI employee"
+        action: "call"
+        target: "kpi_employee"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+        asserts:
+          state:
+            type: "value"
+            expected: "open"
+
+      - step: "Cancel KPI employee"
+        action: "call"
+        target: "kpi_employee"
+        method: "action_cancel"
+        as_user: "base.user_admin"
+        context:
+          bypass_policy_check: true
+        asserts:
+          state:
+            type: "value"
+            expected: "cancel"
+
+  - name: "KPI Employee - Score Method Range"
+    steps:
+      - step: "Create employee"
+        action: "create"
+        model: "hr.employee"
+        save_as: "employee"
+        values:
+          name: "Test Employee KPI Range Score"
+
+      - step: "Create KPI item"
+        action: "create"
+        model: "kpi_item"
+        save_as: "kpi_item"
+        values:
+          name: "Safety Score"
+          code: "TITEMRANGE"
+
+      - step: "Create score range value"
+        action: "create"
+        model: "kpi_score_categ_range_value"
+        save_as: "rv_range"
+        values:
+          name: "Pass"
+          code: "TRVRANGE"
+
+      - step: "Create score category"
+        action: "create"
+        model: "kpi_score_categ"
+        save_as: "score_categ"
+        values:
+          name: "Range Score Category"
+          code: "TRANGESCATEG"
+          range_ids:
+            - - 0
+              - 0
+              - min_value: 0.0
+                max_value: 100.0
+                categ_range_value_id: "EVAL: registry['rv_range'].id"
+
+      - step: "Create KPI employee with range score method"
+        action: "create"
+        model: "kpi.employee"
+        save_as: "kpi_employee"
+        as_user: "base.user_admin"
+        values:
+          employee_id: "EVAL: registry['employee'].id"
+          kpi_score_categ_id: "EVAL: registry['score_categ'].id"
+          date_start: 2026-01-01
+          date_end: 2026-12-31
+          user_ids:
+            - - 4
+              - "EVAL: env.ref('base.user_admin').id"
+          line_ids:
+            - - 0
+              - 0
+              - kpi_item_id: "EVAL: registry['kpi_item'].id"
+                weight: 100.0
+                target: 100.0
+                realization_method: "user"
+                score_method: "range"
+                score_range_ids:
+                  - - 0
+                    - 0
+                    - min_value: 0.0
+                      max_value: 50.0
+                      score: 60.0
+                  - - 0
+                    - 0
+                    - min_value: 50.01
+                      max_value: 100.0
+                      score: 100.0
+
+      - step: "Assert KPI employee created"
+        action: "assert"
+        target: "kpi_employee"
+        asserts:
+          state:
+            type: "value"
+            expected: "draft"
+          amount_weight:
+            type: "value"
+            expected: 100.0
+
+      - step: "Confirm KPI employee"
+        action: "call"
+        target: "kpi_employee"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
+
+      - step: "Invalidate cache after confirm"
+        action: "call"
+        target: "kpi_employee"
+        method: "invalidate_cache"
+
+      - step: "Approve KPI employee"
+        action: "call"
+        target: "kpi_employee"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+        asserts:
+          state:
+            type: "value"
+            expected: "open"
+
+      - step: "Invalidate cache after approve"
+        action: "call"
+        target: "kpi_employee"
+        method: "invalidate_cache"
+
+      - step: "Get appraisal"
+        action: "search"
+        model: "kpi.employee_appraisal"
+        domain:
+          - ["kpi_id", "=", "EVAL: registry['kpi_employee'].id"]
+        save_as: "appraisal"
+        limit: 1
+
+      - step: "Invalidate cache before appraisal confirm"
+        action: "call"
+        target: "appraisal"
+        method: "invalidate_cache"
+
+      - step: "Confirm appraisal"
+        action: "call"
+        target: "appraisal"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+        context:
+          bypass_policy_check: true
+
+      - step: "Invalidate cache after appraisal confirm"
+        action: "call"
+        target: "appraisal"
+        method: "invalidate_cache"
+
+      - step: "Assert appraisal done"
+        action: "assert"
+        target: "appraisal"
+        asserts:
+          state:
+            type: "value"
+            expected: "done"
+
+      - step: "Invalidate KPI cache before done"
+        action: "call"
+        target: "kpi_employee"
+        method: "invalidate_cache"
+
+      - step: "Mark KPI done"
+        action: "call"
+        target: "kpi_employee"
+        method: "action_done"
+        as_user: "base.user_admin"
+        context:
+          bypass_policy_check: true
+        asserts:
+          state:
+            type: "value"
+            expected: "done"
+
+      - step: "Invalidate cache after done"
+        action: "call"
+        target: "kpi_employee"
+        method: "invalidate_cache"
+
+      - step: "Assert KPI result computed"
+        action: "assert"
+        target: "kpi_employee"
+        asserts:
+          kpi_result:
+            type: "value"
+            operator: "is_truthy"
