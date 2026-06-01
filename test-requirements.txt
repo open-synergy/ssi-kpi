@@ -7,3 +7,4 @@ odoo14-addon-ssi-transaction-cancel-mixin
 odoo14-addon-ssi-transaction-terminate-mixin
 odoo14-addon-ssi-duration-mixin
 odoo14-addon-ssi-decorator
+odoo-yaml-test
