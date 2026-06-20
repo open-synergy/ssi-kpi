@@ -12,7 +12,43 @@
         />
     <field name="mode">primary</field>
     <field name="arch" type="xml">
-        <data />
+        <data>
+            <xpath expr="//field[@name='code']" position="after">
+                <field name="kpi_score_categ_id" />
+            </xpath>
+            <xpath expr="//group[@name='dom_active']" position="after">
+                <separator />
+                <group name="dom_type">
+                    <filter
+                            name="dom_type_employee"
+                            string="Employee"
+                            domain="[('type', '=', 'employee')]"
+                        />
+                    <filter
+                            name="dom_type_department"
+                            string="Department"
+                            domain="[('type', '=', 'department')]"
+                        />
+                    <filter
+                            name="dom_type_both"
+                            string="Both"
+                            domain="[('type', '=', 'both')]"
+                        />
+                </group>
+                <group name="group_by">
+                    <filter
+                            name="grp_type"
+                            string="Type"
+                            context="{'group_by':'type'}"
+                        />
+                    <filter
+                            name="grp_kpi_score_categ_id"
+                            string="Score Category"
+                            context="{'group_by':'kpi_score_categ_id'}"
+                        />
+                </group>
+            </xpath>
+        </data>
     </field>
 </record>
 
