@@ -366,6 +366,7 @@ msgstr ""
 
 #. module: ssi_kpi
 #: model:ir.model.fields.selection,name:ssi_kpi.selection__kpi_template__type__both
+#: model_terms:ir.ui.view,arch_db:ssi_kpi.kpi_template_view_search
 msgid "Both"
 msgstr ""
 
@@ -642,6 +643,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ssi_kpi.field_kpi_department__department_id
 #: model:ir.model.fields,field_description:ssi_kpi.field_kpi_department_appraisal__department_id
 #: model:ir.model.fields.selection,name:ssi_kpi.selection__kpi_template__type__department
+#: model_terms:ir.ui.view,arch_db:ssi_kpi.kpi_template_view_search
 msgid "Department"
 msgstr ""
 
@@ -732,6 +734,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ssi_kpi.field_kpi_employee_appraisal__employee_id
 #: model:ir.model.fields.selection,name:ssi_kpi.selection__kpi_template__type__employee
 #: model_terms:ir.ui.view,arch_db:ssi_kpi.kpi_employee_view_search
+#: model_terms:ir.ui.view,arch_db:ssi_kpi.kpi_template_view_search
 msgid "Employee"
 msgstr ""
 
@@ -1731,6 +1734,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ssi_kpi.field_kpi_employee__kpi_score_categ_id
 #: model:ir.model.fields,field_description:ssi_kpi.field_kpi_template__kpi_score_categ_id
 #: model:ir.model.fields,field_description:ssi_kpi.field_mixin_kpi__kpi_score_categ_id
+#: model_terms:ir.ui.view,arch_db:ssi_kpi.kpi_template_view_search
 msgid "Score Category"
 msgstr ""
 
@@ -1916,6 +1920,7 @@ msgstr ""
 
 #. module: ssi_kpi
 #: model:ir.model.fields,field_description:ssi_kpi.field_kpi_template__type
+#: model_terms:ir.ui.view,arch_db:ssi_kpi.kpi_template_view_search
 msgid "Type"
 msgstr ""
 
