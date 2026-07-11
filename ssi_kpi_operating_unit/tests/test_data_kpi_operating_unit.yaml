@@ -1,0 +1,162 @@
+scenarios:
+  - name: "KPI Employee - Create with Operating Unit"
+    steps:
+      - step: "Get main company operating unit"
+        action: "search"
+        model: "operating.unit"
+        domain: [["company_id", "=", "REF: base.main_company"]]
+        save_as: "operating_unit"
+        limit: 1
+
+      - step: "Create employee"
+        action: "create"
+        model: "hr.employee"
+        save_as: "employee"
+        values:
+          name: "Test Employee KPI OU"
+
+      - step: "Create KPI employee with operating unit"
+        action: "create"
+        model: "kpi.employee"
+        save_as: "kpi_employee"
+        as_user: "base.user_admin"
+        values:
+          employee_id: "EVAL: registry['employee'].id"
+          date_start: 2026-01-01
+          date_end: 2026-12-31
+          operating_unit_id: "EVAL: registry['operating_unit'].id"
+
+      - step: "Assert KPI employee has operating unit"
+        action: "assert"
+        target: "kpi_employee"
+        asserts:
+          state:
+            type: "value"
+            expected: "draft"
+          operating_unit_id:
+            type: "value"
+            operator: "is_truthy"
+
+  - name: "KPI Department - Create with Operating Unit"
+    steps:
+      - step: "Get main company operating unit"
+        action: "search"
+        model: "operating.unit"
+        domain: [["company_id", "=", "REF: base.main_company"]]
+        save_as: "operating_unit"
+        limit: 1
+
+      - step: "Create department"
+        action: "create"
+        model: "hr.department"
+        save_as: "department"
+        values:
+          name: "Test Department KPI OU"
+
+      - step: "Create KPI department with operating unit"
+        action: "create"
+        model: "kpi.department"
+        save_as: "kpi_department"
+        as_user: "base.user_admin"
+        values:
+          department_id: "EVAL: registry['department'].id"
+          date_start: 2026-01-01
+          date_end: 2026-12-31
+          operating_unit_id: "EVAL: registry['operating_unit'].id"
+
+      - step: "Assert KPI department has operating unit"
+        action: "assert"
+        target: "kpi_department"
+        asserts:
+          state:
+            type: "value"
+            expected: "draft"
+          operating_unit_id:
+            type: "value"
+            operator: "is_truthy"
+
+  - name: "KPI Employee Appraisal - Create with Operating Unit"
+    steps:
+      - step: "Get main company operating unit"
+        action: "search"
+        model: "operating.unit"
+        domain: [["company_id", "=", "REF: base.main_company"]]
+        save_as: "operating_unit"
+        limit: 1
+
+      - step: "Create employee"
+        action: "create"
+        model: "hr.employee"
+        save_as: "employee"
+        values:
+          name: "Test Employee KPI Appraisal OU"
+
+      - step: "Create parent KPI employee"
+        action: "create"
+        model: "kpi.employee"
+        save_as: "kpi_employee"
+        as_user: "base.user_admin"
+        values:
+          employee_id: "EVAL: registry['employee'].id"
+          date_start: 2026-01-01
+          date_end: 2026-12-31
+
+      - step: "Create KPI employee appraisal with operating unit"
+        action: "create"
+        model: "kpi.employee_appraisal"
+        save_as: "appraisal"
+        as_user: "base.user_admin"
+        values:
+          kpi_id: "EVAL: registry['kpi_employee'].id"
+          operating_unit_id: "EVAL: registry['operating_unit'].id"
+
+      - step: "Assert KPI employee appraisal has operating unit"
+        action: "assert"
+        target: "appraisal"
+        asserts:
+          operating_unit_id:
+            type: "value"
+            operator: "is_truthy"
+
+  - name: "KPI Department Appraisal - Create with Operating Unit"
+    steps:
+      - step: "Get main company operating unit"
+        action: "search"
+        model: "operating.unit"
+        domain: [["company_id", "=", "REF: base.main_company"]]
+        save_as: "operating_unit"
+        limit: 1
+
+      - step: "Create department"
+        action: "create"
+        model: "hr.department"
+        save_as: "department"
+        values:
+          name: "Test Department KPI Appraisal OU"
+
+      - step: "Create parent KPI department"
+        action: "create"
+        model: "kpi.department"
+        save_as: "kpi_department"
+        as_user: "base.user_admin"
+        values:
+          department_id: "EVAL: registry['department'].id"
+          date_start: 2026-01-01
+          date_end: 2026-12-31
+
+      - step: "Create KPI department appraisal with operating unit"
+        action: "create"
+        model: "kpi.department_appraisal"
+        save_as: "appraisal"
+        as_user: "base.user_admin"
+        values:
+          kpi_id: "EVAL: registry['kpi_department'].id"
+          operating_unit_id: "EVAL: registry['operating_unit'].id"
+
+      - step: "Assert KPI department appraisal has operating unit"
+        action: "assert"
+        target: "appraisal"
+        asserts:
+          operating_unit_id:
+            type: "value"
+            operator: "is_truthy"
