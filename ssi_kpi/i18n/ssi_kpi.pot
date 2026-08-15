@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: ssi_kpi
-#: code:addons/ssi_kpi/models/kpi_mixin.py:0
+#: code:addons/ssi_kpi/models/mixin_kpi.py:0
 #, python-format
 msgid ""
 "\n"
@@ -26,7 +26,7 @@ msgid ""
 msgstr ""
 
 #. module: ssi_kpi
-#: code:addons/ssi_kpi/models/kpi_appraisal_mixin.py:0
+#: code:addons/ssi_kpi/models/mixin_kpi_appraisal.py:0
 #, python-format
 msgid ""
 "\n"
@@ -255,7 +255,7 @@ msgid "All Subordinate"
 msgstr ""
 
 #. module: ssi_kpi
-#: code:addons/ssi_kpi/models/kpi_mixin.py:0
+#: code:addons/ssi_kpi/models/mixin_kpi.py:0
 #, python-format
 msgid "All appraisals must be done"
 msgstr ""
@@ -752,7 +752,7 @@ msgid "End date"
 msgstr ""
 
 #. module: ssi_kpi
-#: code:addons/ssi_kpi/models/kpi_line_mixin.py:0
+#: code:addons/ssi_kpi/models/mixin_kpi_line.py:0
 #, python-format
 msgid ""
 "Error evaluating conditions.\n"
@@ -1546,7 +1546,7 @@ msgid "Number of unread messages"
 msgstr ""
 
 #. module: ssi_kpi
-#: code:addons/ssi_kpi/models/kpi_mixin.py:0
+#: code:addons/ssi_kpi/models/mixin_kpi.py:0
 #, python-format
 msgid "One or more user appraisal has been done"
 msgstr ""
@@ -1895,7 +1895,7 @@ msgid "Total weight cannot be greater than 100.0%"
 msgstr ""
 
 #. module: ssi_kpi
-#: code:addons/ssi_kpi/models/kpi_mixin.py:0
+#: code:addons/ssi_kpi/models/mixin_kpi.py:0
 #, python-format
 msgid "Total weight must be 100.0%"
 msgstr ""
@@ -2080,6 +2080,34 @@ msgstr ""
 #: model:ir.model.fields.selection,name:ssi_kpi.selection__kpi_employee__state__confirm
 #: model:ir.model.fields.selection,name:ssi_kpi.selection__mixin_kpi__state__confirm
 msgid "Waiting for Approval"
+msgstr ""
+
+#. module: ssi_kpi
+#: model:ir.model.fields,field_description:ssi_kpi.field_kpi_department__website_message_ids
+#: model:ir.model.fields,field_description:ssi_kpi.field_kpi_department_appraisal__website_message_ids
+#: model:ir.model.fields,field_description:ssi_kpi.field_kpi_employee__website_message_ids
+#: model:ir.model.fields,field_description:ssi_kpi.field_kpi_employee_appraisal__website_message_ids
+#: model:ir.model.fields,field_description:ssi_kpi.field_kpi_item__website_message_ids
+#: model:ir.model.fields,field_description:ssi_kpi.field_kpi_score_categ__website_message_ids
+#: model:ir.model.fields,field_description:ssi_kpi.field_kpi_score_categ_range_value__website_message_ids
+#: model:ir.model.fields,field_description:ssi_kpi.field_kpi_template__website_message_ids
+#: model:ir.model.fields,field_description:ssi_kpi.field_mixin_kpi__website_message_ids
+#: model:ir.model.fields,field_description:ssi_kpi.field_mixin_kpi_appraisal__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: ssi_kpi
+#: model:ir.model.fields,help:ssi_kpi.field_kpi_department__website_message_ids
+#: model:ir.model.fields,help:ssi_kpi.field_kpi_department_appraisal__website_message_ids
+#: model:ir.model.fields,help:ssi_kpi.field_kpi_employee__website_message_ids
+#: model:ir.model.fields,help:ssi_kpi.field_kpi_employee_appraisal__website_message_ids
+#: model:ir.model.fields,help:ssi_kpi.field_kpi_item__website_message_ids
+#: model:ir.model.fields,help:ssi_kpi.field_kpi_score_categ__website_message_ids
+#: model:ir.model.fields,help:ssi_kpi.field_kpi_score_categ_range_value__website_message_ids
+#: model:ir.model.fields,help:ssi_kpi.field_kpi_template__website_message_ids
+#: model:ir.model.fields,help:ssi_kpi.field_mixin_kpi__website_message_ids
+#: model:ir.model.fields,help:ssi_kpi.field_mixin_kpi_appraisal__website_message_ids
+msgid "Website communication history"
 msgstr ""
 
 #. module: ssi_kpi
