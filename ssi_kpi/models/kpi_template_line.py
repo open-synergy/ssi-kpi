@@ -6,6 +6,12 @@ from odoo import fields, models
 
 
 class KpiTemplateLine(models.Model):
+    """
+    One KPI item configured on a ``kpi_template``. Cloned into a
+    ``mixin.kpi_line`` record whenever the template is applied to a
+    KPI document via ``action_populate_kpi``.
+    """
+
     _name = "kpi_template_line"
     _description = "KPI Template Line"
 

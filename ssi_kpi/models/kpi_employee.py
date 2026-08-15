@@ -6,12 +6,23 @@ from odoo import api, fields, models
 
 
 class KpiEmployee(models.Model):
+    """
+    KPI evaluation document for an ``hr.employee``. Concrete
+    implementation of ``mixin.kpi`` scoped to one employee per
+    evaluation period.
+    """
+
     _name = "kpi.employee"
     _inherit = "mixin.kpi"
     _description = "KPI for Employee"
 
     @api.model
     def _default_employee_id(self):
+        """Default ``employee_id`` to the current user's first employee.
+
+        :return: id of ``self.env.user.employee_ids[0]``, or ``None``
+            if the current user has no linked employee
+        """
         employees = self.env.user.employee_ids
         if len(employees) > 0:
             return employees[0].id
@@ -36,6 +47,12 @@ class KpiEmployee(models.Model):
     )
 
     def _check_overlap(self):
+        """Check for another non-cancelled KPI overlapping this period.
+
+        :return: ``False`` when another ``kpi.employee`` record for
+            the same ``employee_id`` overlaps ``date_start``/
+            ``date_end``, ``True`` otherwise
+        """
         self.ensure_one()
         result = True
         criteria = [
@@ -50,57 +67,3 @@ class KpiEmployee(models.Model):
             result = False
 
         return result
-
-
-class KPIEmployeeLine(models.Model):
-    _name = "kpi.employee_line"
-    _inherit = "mixin.kpi_line"
-    _description = "KPI Line for Employee"
-
-    kpi_id = fields.Many2one(
-        comodel_name="kpi.employee",
-    )
-    score_range_ids = fields.One2many(
-        string="Score Ranges",
-        comodel_name="kpi.employee_line_score_range",
-        inverse_name="kpi_line_id",
-    )
-
-
-class KPIEmployeeLineScoreRange(models.Model):
-    _name = "kpi.employee_line_score_range"
-    _inherit = "mixin.kpi_line_score_range"
-    _description = "KPI Line for Employee"
-
-    kpi_line_id = fields.Many2one(
-        comodel_name="kpi.employee_line",
-    )
-
-
-class KPIEmployeeAppraisal(models.Model):
-    _name = "kpi.employee_appraisal"
-    _inherit = "mixin.kpi_appraisal"
-    _description = "KPI Appraisal for Employee"
-
-    kpi_id = fields.Many2one(
-        comodel_name="kpi.employee",
-    )
-    employee_id = fields.Many2one(
-        string="Employee", comodel_name="hr.employee", related="kpi_id.employee_id"
-    )
-    line_ids = fields.One2many(
-        comodel_name="kpi.employee_appraisal_line",
-    )
-
-
-class KPIEmployeeAppraisalLine(models.Model):
-    _name = "kpi.employee_appraisal_line"
-    _inherit = "mixin.kpi_appraisal_line"
-    _description = "KPI Appraisal Line for Employee"
-
-    kpi_appraisal_id = fields.Many2one(
-        comodel_name="kpi.employee_appraisal",
-    )
-    kpi_line_id = fields.Many2one(
-        comodel_name="kpi.employee_line",
-    )

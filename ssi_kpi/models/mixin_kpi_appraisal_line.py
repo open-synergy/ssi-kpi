@@ -5,6 +5,12 @@ from odoo import fields, models
 
 
 class MixinKpiAppraisalLine(models.AbstractModel):
+    """
+    Abstract base for one appraiser's rating of a single KPI line.
+    Mirrors the line's target/limits as related fields and lets the
+    appraiser fill in ``realization`` for that KPI item.
+    """
+
     _name = "mixin.kpi_appraisal_line"
     _description = "Abstract Class for KPI Apprasial Line"
 
@@ -75,6 +81,12 @@ class MixinKpiAppraisalLine(models.AbstractModel):
     )
 
     def _check_realization_limit(self):
+        """Check whether ``realization`` breaches the line's limits.
+
+        :return: ``True`` when ``use_realization_limit`` is set and
+            ``realization`` falls outside
+            ``[min_realization_limit, max_realization_limit]``
+        """
         self.ensure_one()
         check = False
         if self.use_realization_limit:

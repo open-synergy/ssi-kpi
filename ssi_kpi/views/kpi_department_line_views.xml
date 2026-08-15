@@ -106,6 +106,13 @@
                                 <field name="max_value" />
                                 <field name="score" />
                             </tree>
+                            <form>
+                                <group>
+                                    <field name="min_value" />
+                                    <field name="max_value" />
+                                    <field name="score" />
+                                </group>
+                            </form>
                         </field>
                     </group>
                     <notebook>

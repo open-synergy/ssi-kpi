@@ -6,6 +6,12 @@ from odoo import api, fields, models
 
 
 class KpiScoreCateg(models.Model):
+    """
+    Master data grouping a set of ``kpi_score_categ_range`` brackets
+    used to translate a KPI's final score into a named result (e.g.
+    "Excellent", "Needs Improvement").
+    """
+
     _name = "kpi_score_categ"
     _inherit = ["mixin.master_data"]
     _description = "KPI Score Category"
@@ -24,6 +30,11 @@ class KpiScoreCateg(models.Model):
         "range_ids.min_value",
     )
     def _compute_min_range_value_id(self):
+        """Resolve the range with the lowest ``min_value``.
+
+        Stored on ``min_range_value_id`` so ``_get_range_result`` can
+        classify final scores below every configured range.
+        """
         for record in self:
             min_score_id = False
             if record.range_ids:
@@ -48,6 +59,11 @@ class KpiScoreCateg(models.Model):
         "range_ids.max_value",
     )
     def _compute_max_range_value_id(self):
+        """Resolve the range with the highest ``max_value``.
+
+        Stored on ``max_range_value_id`` so ``_get_range_result`` can
+        classify final scores above every configured range.
+        """
         for record in self:
             max_score_id = False
             if record.range_ids:
@@ -68,6 +84,17 @@ class KpiScoreCateg(models.Model):
     )
 
     def _get_range_result(self, final_score):
+        """Classify ``final_score`` into a range value label.
+
+        Falls back to the lowest/highest configured range when
+        ``final_score`` is outside every bracket; otherwise finds the
+        matching ``kpi_score_categ_range``.
+
+        :param final_score: score to classify
+        :return: ``name`` of the matching
+            ``kpi_score_categ_range_value``, or empty string when
+            there is no range configured at all
+        """
         self.ensure_one()
         result = ""
         if final_score < self.min_range_value_id.min_value:

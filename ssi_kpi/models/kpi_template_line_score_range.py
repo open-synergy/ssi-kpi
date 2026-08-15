@@ -5,12 +5,20 @@
 from odoo import fields, models
 
 
-class MixinKPILineScoreRange(models.AbstractModel):
-    _name = "mixin.kpi_line_score_range"
-    _rec_name = "kpi_line_id"
-    _description = "Abstract Class KPI Line Score Range"
+class KpiTemplateLineScoreRange(models.Model):
+    """
+    Score range bracket for a ``kpi_template_line``. Cloned into a
+    ``mixin.kpi_line_score_range`` record whenever the template line
+    is applied to a KPI document.
+    """
 
-    kpi_line_id = fields.Many2one(string="#KPI Line", comodel_name="mixin.kpi_line")
+    _name = "kpi_template_line_score_range"
+    _rec_name = "template_line_id"
+    _description = "KPI Template Line Score Range"
+
+    template_line_id = fields.Many2one(
+        string="#Template Line", comodel_name="kpi_template_line"
+    )
     min_value = fields.Float(
         string="Min. Value",
         required=True,

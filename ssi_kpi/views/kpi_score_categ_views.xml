@@ -55,6 +55,13 @@
                             <field name="max_value" string="Max. (%)" />
                             <field name="categ_range_value_id" />
                         </tree>
+                        <form>
+                            <group>
+                                <field name="min_value" string="Min. (%)" />
+                                <field name="max_value" string="Max. (%)" />
+                                <field name="categ_range_value_id" />
+                            </group>
+                        </form>
                     </field>
                 </page>
             </xpath>

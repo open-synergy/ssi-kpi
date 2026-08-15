@@ -5,7 +5,12 @@
 from odoo import fields, models
 
 
-class KPIScoreCategRangeValue(models.Model):
+class KpiScoreCategRangeValue(models.Model):
+    """
+    Master data for a KPI result label (e.g. "Excellent", "Average",
+    "Poor") assigned to a ``kpi_score_categ_range`` bracket.
+    """
+
     _name = "kpi_score_categ_range_value"
     _inherit = ["mixin.master_data"]
     _description = "KPI Score Category Value"

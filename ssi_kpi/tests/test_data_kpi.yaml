@@ -1,3 +1,6 @@
+options:
+  auto_refresh: true
+
 scenarios:
   - name: "KPI Item - Create"
     steps:
@@ -314,11 +317,6 @@ scenarios:
         method: "action_populate_kpi"
         as_user: "base.user_admin"
 
-      - step: "Invalidate cache after populate"
-        action: "call"
-        target: "kpi_employee"
-        method: "invalidate_cache"
-
       - step: "Assert lines and weight populated"
         action: "assert"
         target: "kpi_employee"
@@ -344,11 +342,6 @@ scenarios:
             type: "value"
             expected: "confirm"
 
-      - step: "Invalidate cache after confirm"
-        action: "call"
-        target: "kpi_employee"
-        method: "invalidate_cache"
-
       - step: "Approve KPI employee"
         action: "call"
         target: "kpi_employee"
@@ -358,11 +351,6 @@ scenarios:
           state:
             type: "value"
             expected: "open"
-
-      - step: "Invalidate cache after approve"
-        action: "call"
-        target: "kpi_employee"
-        method: "invalidate_cache"
 
       - step: "Assert appraisals created"
         action: "assert"
@@ -389,11 +377,6 @@ scenarios:
             type: "value"
             expected: "draft"
 
-      - step: "Invalidate cache before appraisal confirm"
-        action: "call"
-        target: "appraisal"
-        method: "invalidate_cache"
-
       - step: "Confirm appraisal (auto-approves and done)"
         action: "call"
         target: "appraisal"
@@ -402,11 +385,6 @@ scenarios:
         context:
           bypass_policy_check: true
 
-      - step: "Invalidate cache after appraisal confirm"
-        action: "call"
-        target: "appraisal"
-        method: "invalidate_cache"
-
       - step: "Assert appraisal done"
         action: "assert"
         target: "appraisal"
@@ -414,11 +392,6 @@ scenarios:
           state:
             type: "value"
             expected: "done"
-
-      - step: "Invalidate KPI cache before done"
-        action: "call"
-        target: "kpi_employee"
-        method: "invalidate_cache"
 
       - step: "Mark KPI employee as done"
         action: "call"
@@ -431,11 +404,6 @@ scenarios:
           state:
             type: "value"
             expected: "done"
-
-      - step: "Invalidate cache after done"
-        action: "call"
-        target: "kpi_employee"
-        method: "invalidate_cache"
 
       - step: "Assert KPI result computed"
         action: "assert"
@@ -527,11 +495,6 @@ scenarios:
             type: "value"
             expected: "confirm"
 
-      - step: "Invalidate cache after confirm"
-        action: "call"
-        target: "kpi_dept"
-        method: "invalidate_cache"
-
       - step: "Approve KPI department"
         action: "call"
         target: "kpi_dept"
@@ -542,11 +505,6 @@ scenarios:
             type: "value"
             expected: "open"
 
-      - step: "Invalidate cache after approve"
-        action: "call"
-        target: "kpi_dept"
-        method: "invalidate_cache"
-
       - step: "Get department appraisal"
         action: "search"
         model: "kpi.department_appraisal"
@@ -554,11 +512,6 @@ scenarios:
           - ["kpi_id", "=", "EVAL: registry['kpi_dept'].id"]
         save_as: "appraisal"
         limit: 1
-
-      - step: "Invalidate cache before appraisal confirm"
-        action: "call"
-        target: "appraisal"
-        method: "invalidate_cache"
 
       - step: "Confirm department appraisal"
         action: "call"
@@ -568,11 +521,6 @@ scenarios:
         context:
           bypass_policy_check: true
 
-      - step: "Invalidate cache after appraisal confirm"
-        action: "call"
-        target: "appraisal"
-        method: "invalidate_cache"
-
       - step: "Assert appraisal done"
         action: "assert"
         target: "appraisal"
@@ -580,11 +528,6 @@ scenarios:
           state:
             type: "value"
             expected: "done"
-
-      - step: "Invalidate KPI cache before done"
-        action: "call"
-        target: "kpi_dept"
-        method: "invalidate_cache"
 
       - step: "Mark KPI department as done"
         action: "call"
@@ -597,11 +540,6 @@ scenarios:
           state:
             type: "value"
             expected: "done"
-
-      - step: "Invalidate cache after done"
-        action: "call"
-        target: "kpi_dept"
-        method: "invalidate_cache"
 
       - step: "Assert KPI result computed"
         action: "assert"
@@ -654,11 +592,10 @@ scenarios:
         target: "kpi_employee"
         method: "action_confirm"
         as_user: "base.user_admin"
-
-      - step: "Invalidate cache after confirm"
-        action: "call"
-        target: "kpi_employee"
-        method: "invalidate_cache"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
 
       - step: "Approve KPI employee"
         action: "call"
@@ -775,11 +712,6 @@ scenarios:
             type: "value"
             expected: "confirm"
 
-      - step: "Invalidate cache after confirm"
-        action: "call"
-        target: "kpi_employee"
-        method: "invalidate_cache"
-
       - step: "Approve KPI employee"
         action: "call"
         target: "kpi_employee"
@@ -790,11 +722,6 @@ scenarios:
             type: "value"
             expected: "open"
 
-      - step: "Invalidate cache after approve"
-        action: "call"
-        target: "kpi_employee"
-        method: "invalidate_cache"
-
       - step: "Get appraisal"
         action: "search"
         model: "kpi.employee_appraisal"
@@ -802,11 +729,6 @@ scenarios:
           - ["kpi_id", "=", "EVAL: registry['kpi_employee'].id"]
         save_as: "appraisal"
         limit: 1
-
-      - step: "Invalidate cache before appraisal confirm"
-        action: "call"
-        target: "appraisal"
-        method: "invalidate_cache"
 
       - step: "Confirm appraisal"
         action: "call"
@@ -816,11 +738,6 @@ scenarios:
         context:
           bypass_policy_check: true
 
-      - step: "Invalidate cache after appraisal confirm"
-        action: "call"
-        target: "appraisal"
-        method: "invalidate_cache"
-
       - step: "Assert appraisal done"
         action: "assert"
         target: "appraisal"
@@ -828,11 +745,6 @@ scenarios:
           state:
             type: "value"
             expected: "done"
-
-      - step: "Invalidate KPI cache before done"
-        action: "call"
-        target: "kpi_employee"
-        method: "invalidate_cache"
 
       - step: "Mark KPI done"
         action: "call"
@@ -846,11 +758,6 @@ scenarios:
             type: "value"
             expected: "done"
 
-      - step: "Invalidate cache after done"
-        action: "call"
-        target: "kpi_employee"
-        method: "invalidate_cache"
-
       - step: "Assert KPI result computed"
         action: "assert"
         target: "kpi_employee"
@@ -858,3 +765,284 @@ scenarios:
           kpi_result:
             type: "value"
             operator: "is_truthy"
+
+  - name: "KPI Employee - Weight and Final Score Compute"
+    steps:
+      - step: "Create employee"
+        action: "create"
+        model: "hr.employee"
+        save_as: "employee"
+        values:
+          name: "Test Employee KPI Compute"
+
+      - step: "Create KPI item - Weight 60"
+        action: "create"
+        model: "kpi_item"
+        save_as: "kpi_item_60"
+        values:
+          name: "Weight 60 Item"
+          code: "TITEMCMP60"
+
+      - step: "Create KPI item - Weight 40"
+        action: "create"
+        model: "kpi_item"
+        save_as: "kpi_item_40"
+        values:
+          name: "Weight 40 Item"
+          code: "TITEMCMP40"
+
+      - step: "Create KPI employee with two weighted lines"
+        action: "create"
+        model: "kpi.employee"
+        save_as: "kpi_employee_compute"
+        as_user: "base.user_admin"
+        values:
+          employee_id: "EVAL: registry['employee'].id"
+          date_start: 2026-01-01
+          date_end: 2026-12-31
+          line_ids:
+            - - 0
+              - 0
+              - kpi_item_id: "EVAL: registry['kpi_item_60'].id"
+                weight: 60.0
+                target: 100.0
+                realization_method: "python"
+                python_code: "result = 100.0"
+                score_method: "higher"
+            - - 0
+              - 0
+              - kpi_item_id: "EVAL: registry['kpi_item_40'].id"
+                weight: 40.0
+                target: 100.0
+                realization_method: "python"
+                python_code: "result = 100.0"
+                score_method: "higher"
+
+      - step: "Assert total weight and final score are aggregated"
+        action: "assert"
+        target: "kpi_employee_compute"
+        asserts:
+          amount_weight:
+            type: "value"
+            expected: 100.0
+          amount_final_score:
+            type: "value"
+            expected: 100.0
+          line_ids:
+            type: "o2m"
+            check: "count"
+            expected_count: 2
+
+  - name: "KPI Department - Weight and Final Score Compute"
+    steps:
+      - step: "Create department"
+        action: "create"
+        model: "hr.department"
+        save_as: "department"
+        values:
+          name: "Test Department KPI Compute"
+
+      - step: "Create KPI item - Weight 60"
+        action: "create"
+        model: "kpi_item"
+        save_as: "kpi_item_60"
+        values:
+          name: "Dept Weight 60 Item"
+          code: "TITEMDCMP60"
+
+      - step: "Create KPI item - Weight 40"
+        action: "create"
+        model: "kpi_item"
+        save_as: "kpi_item_40"
+        values:
+          name: "Dept Weight 40 Item"
+          code: "TITEMDCMP40"
+
+      - step: "Create KPI department with two weighted lines"
+        action: "create"
+        model: "kpi.department"
+        save_as: "kpi_dept_compute"
+        as_user: "base.user_admin"
+        values:
+          department_id: "EVAL: registry['department'].id"
+          date_start: 2026-01-01
+          date_end: 2026-12-31
+          line_ids:
+            - - 0
+              - 0
+              - kpi_item_id: "EVAL: registry['kpi_item_60'].id"
+                weight: 60.0
+                target: 100.0
+                realization_method: "python"
+                python_code: "result = 100.0"
+                score_method: "higher"
+            - - 0
+              - 0
+              - kpi_item_id: "EVAL: registry['kpi_item_40'].id"
+                weight: 40.0
+                target: 100.0
+                realization_method: "python"
+                python_code: "result = 100.0"
+                score_method: "higher"
+
+      - step: "Assert total weight and final score are aggregated"
+        action: "assert"
+        target: "kpi_dept_compute"
+        asserts:
+          amount_weight:
+            type: "value"
+            expected: 100.0
+          amount_final_score:
+            type: "value"
+            expected: 100.0
+          line_ids:
+            type: "o2m"
+            check: "count"
+            expected_count: 2
+
+  - name: "KPI Employee - Confirm Blocked When Weight Not 100"
+    steps:
+      - step: "Create employee"
+        action: "create"
+        model: "hr.employee"
+        save_as: "employee"
+        values:
+          name: "Test Employee KPI Weight Guard"
+
+      - step: "Create KPI item"
+        action: "create"
+        model: "kpi_item"
+        save_as: "kpi_item"
+        values:
+          name: "Weight Guard Item"
+          code: "TITEMWGUARD"
+
+      - step: "Create KPI employee with incomplete weight"
+        action: "create"
+        model: "kpi.employee"
+        save_as: "kpi_employee_wguard"
+        as_user: "base.user_admin"
+        values:
+          employee_id: "EVAL: registry['employee'].id"
+          date_start: 2026-01-01
+          date_end: 2026-12-31
+          line_ids:
+            - - 0
+              - 0
+              - kpi_item_id: "EVAL: registry['kpi_item'].id"
+                weight: 50.0
+                target: 100.0
+                realization_method: "python"
+                python_code: "result = 100.0"
+                score_method: "higher"
+
+      - step: "Assert weight below 100"
+        action: "assert"
+        target: "kpi_employee_wguard"
+        asserts:
+          amount_weight:
+            type: "value"
+            expected: 50.0
+
+      - step: "Confirm must be rejected: total weight is not 100%"
+        action: "call"
+        target: "kpi_employee_wguard"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+        expect_error:
+          type: "UserError"
+          message_contains: "100"
+
+  - name: "KPI Employee - Appraisal Confirm Blocked When Realization Exceeds Limit"
+    steps:
+      - step: "Create employee"
+        action: "create"
+        model: "hr.employee"
+        save_as: "employee"
+        values:
+          name: "Test Employee KPI Realization Guard"
+
+      - step: "Create KPI item"
+        action: "create"
+        model: "kpi_item"
+        save_as: "kpi_item"
+        values:
+          name: "Realization Guard Item"
+          code: "TITEMRGUARD"
+
+      - step: "Create KPI employee with a realization-limited line"
+        action: "create"
+        model: "kpi.employee"
+        save_as: "kpi_employee_rguard"
+        as_user: "base.user_admin"
+        values:
+          employee_id: "EVAL: registry['employee'].id"
+          date_start: 2026-01-01
+          date_end: 2026-12-31
+          user_ids:
+            - - 4
+              - "EVAL: env.ref('base.user_admin').id"
+          line_ids:
+            - - 0
+              - 0
+              - kpi_item_id: "EVAL: registry['kpi_item'].id"
+                weight: 100.0
+                target: 100.0
+                realization_method: "user"
+                use_realization_limit: true
+                min_realization_limit: 0.0
+                max_realization_limit: 50.0
+                score_method: "higher"
+
+      - step: "Confirm KPI employee"
+        action: "call"
+        target: "kpi_employee_rguard"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
+
+      - step: "Approve KPI employee"
+        action: "call"
+        target: "kpi_employee_rguard"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+        asserts:
+          state:
+            type: "value"
+            expected: "open"
+
+      - step: "Get appraisal"
+        action: "search"
+        model: "kpi.employee_appraisal"
+        domain:
+          - ["kpi_id", "=", "EVAL: registry['kpi_employee_rguard'].id"]
+        save_as: "appraisal_rguard"
+        limit: 1
+
+      - step: "Get appraisal line"
+        action: "search"
+        model: "kpi.employee_appraisal_line"
+        domain:
+          - ["kpi_appraisal_id", "=", "EVAL: registry['appraisal_rguard'].id"]
+        save_as: "appraisal_line_rguard"
+        limit: 1
+
+      - step: "Set realization above the allowed limit"
+        action: "write"
+        target: "appraisal_line_rguard"
+        values:
+          realization: 80.0
+
+      - step: "Confirm appraisal must be rejected: realization out of range"
+        action: "call"
+        target: "appraisal_rguard"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+        context:
+          bypass_policy_check: true
+        expect_error:
+          type: "UserError"
+          message_contains: "out of range"

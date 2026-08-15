@@ -6,6 +6,12 @@ from odoo import fields, models
 
 
 class KpiDepartment(models.Model):
+    """
+    KPI evaluation document for a ``hr.department``. Concrete
+    implementation of ``mixin.kpi`` scoped to one department per
+    evaluation period.
+    """
+
     _name = "kpi.department"
     _inherit = "mixin.kpi"
     _description = "KPI for Department"
@@ -28,6 +34,12 @@ class KpiDepartment(models.Model):
     )
 
     def _check_overlap(self):
+        """Check for another non-cancelled KPI overlapping this period.
+
+        :return: ``False`` when another ``kpi.department`` record for
+            the same ``department_id`` overlaps ``date_start``/
+            ``date_end``, ``True`` otherwise
+        """
         self.ensure_one()
         result = True
         criteria = [
@@ -42,59 +54,3 @@ class KpiDepartment(models.Model):
             result = False
 
         return result
-
-
-class KpiDepartmentLine(models.Model):
-    _name = "kpi.department_line"
-    _inherit = "mixin.kpi_line"
-    _description = "KPI Line for Department"
-
-    kpi_id = fields.Many2one(
-        comodel_name="kpi.department",
-    )
-    score_range_ids = fields.One2many(
-        string="Score Ranges",
-        comodel_name="kpi.department_line_score_range",
-        inverse_name="kpi_line_id",
-    )
-
-
-class KPIDepartmentLineScoreRange(models.Model):
-    _name = "kpi.department_line_score_range"
-    _inherit = "mixin.kpi_line_score_range"
-    _description = "KPI Line for Department"
-
-    kpi_line_id = fields.Many2one(
-        comodel_name="kpi.department_line",
-    )
-
-
-class KPIDepartmentAppraisal(models.Model):
-    _name = "kpi.department_appraisal"
-    _inherit = "mixin.kpi_appraisal"
-    _description = "KPI Appraisal for Department"
-
-    kpi_id = fields.Many2one(
-        comodel_name="kpi.department",
-    )
-    department_id = fields.Many2one(
-        string="Department",
-        comodel_name="hr.department",
-        related="kpi_id.department_id",
-    )
-    line_ids = fields.One2many(
-        comodel_name="kpi.department_appraisal_line",
-    )
-
-
-class KPIDepartmentAppraisalLine(models.Model):
-    _name = "kpi.department_appraisal_line"
-    _inherit = "mixin.kpi_appraisal_line"
-    _description = "KPI Appraisal Line for Department"
-
-    kpi_appraisal_id = fields.Many2one(
-        comodel_name="kpi.department_appraisal",
-    )
-    kpi_line_id = fields.Many2one(
-        comodel_name="kpi.department_line",
-    )

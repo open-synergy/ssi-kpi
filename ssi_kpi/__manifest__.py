@@ -19,6 +19,7 @@
         "ssi_transaction_cancel_mixin",
         "ssi_transaction_terminate_mixin",
         "ssi_duration_mixin",
+        "web_tour",
     ],
     "data": [
         "security/ir_module_category_data.xml",
@@ -48,5 +49,6 @@
         "views/kpi_department_appraisal_line_views.xml",
         "views/kpi_score_categ_views.xml",
         "views/kpi_score_categ_range_value_views.xml",
+        "views/assets.xml",
     ],
 }

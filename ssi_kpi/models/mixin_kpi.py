@@ -9,7 +9,14 @@ from odoo.tools.safe_eval import safe_eval
 from odoo.addons.ssi_decorator import ssi_decorator
 
 
-class MixinKPI(models.AbstractModel):
+class MixinKpi(models.AbstractModel):
+    """
+    Abstract base for a KPI evaluation document (draft/confirm/open/
+    done). Populates its ``line_ids`` from a ``kpi_template``, collects
+    per-user appraisals in ``appraisal_ids``, and aggregates weight,
+    final score, and result category once appraisals are done.
+    """
+
     _name = "mixin.kpi"
     _inherit = [
         "mixin.transaction_confirm",
@@ -80,7 +87,12 @@ class MixinKPI(models.AbstractModel):
 
     @api.model
     def _get_policy_field(self):
-        res = super(MixinKPI, self)._get_policy_field()
+        """Extend the policy field list with this mixin's own fields.
+
+        :return: list of policy field names inherited from the base
+            mixin plus the KPI-specific policy fields
+        """
+        res = super(MixinKpi, self)._get_policy_field()
         policy_field = [
             "confirm_ok",
             "approve_ok",
@@ -149,6 +161,7 @@ class MixinKPI(models.AbstractModel):
         "line_ids.weight",
     )
     def _compute_amount_weight(self):
+        """Sum ``weight`` across ``line_ids`` into ``amount_weight``."""
         for record in self:
             total_weight = 0.0
             for line in record.line_ids:
@@ -167,6 +180,7 @@ class MixinKPI(models.AbstractModel):
         "line_ids.final_score",
     )
     def _compute_amount_final_score(self):
+        """Sum ``final_score`` across ``line_ids`` into the total."""
         for record in self:
             total_final_score = 0.0
             for line in record.line_ids:
@@ -185,6 +199,11 @@ class MixinKPI(models.AbstractModel):
         "amount_final_score",
     )
     def _compute_kpi_result(self):
+        """Resolve ``kpi_result`` from the score category range.
+
+        Delegates to ``kpi_score_categ_id._get_range_result`` with
+        ``amount_final_score``; empty when no category is set.
+        """
         for record in self:
             result = ""
             if record.kpi_score_categ_id:
@@ -201,6 +220,11 @@ class MixinKPI(models.AbstractModel):
     )
 
     def action_compute_realization(self):
+        """Recompute realization, score, final score, and result.
+
+        Runs the full recomputation chain on ``line_ids`` (as
+        superuser) followed by ``_compute_kpi_result``.
+        """
         for record in self.sudo():
             record.line_ids._compute_realization()
             record.line_ids._compute_score()
@@ -208,6 +232,13 @@ class MixinKPI(models.AbstractModel):
             record._compute_kpi_result()
 
     def action_populate_kpi(self):
+        """Rebuild ``line_ids``/``user_ids`` from ``kpi_template_id``.
+
+        Discards existing lines (and their score ranges) and
+        recreates them from the template's lines, then refreshes the
+        appraiser list via ``_get_user_ids`` and copies the template's
+        score category.
+        """
         for record in self.sudo():
             result = []
             if record.kpi_template_id:
@@ -247,6 +278,16 @@ class MixinKPI(models.AbstractModel):
                 record.kpi_score_categ_id = record.kpi_template_id.kpi_score_categ_id
 
     def _get_user_ids(self):
+        """Resolve the appraisers per ``kpi_template_id`` selection.
+
+        Reads ``appraisal_selection_method`` on the template: fixed
+        users, group members, both, or a Python code evaluation that
+        must set a ``user`` list in its localdict.
+
+        :return: list of unique ``res.users`` ids
+        :raises UserError: if the Python code path does not set
+            ``user`` in its result
+        """
         self.ensure_one()
         list_user = []
         appraisal_selection_method = self.kpi_template_id.appraisal_selection_method
@@ -280,12 +321,23 @@ class MixinKPI(models.AbstractModel):
         return list(set(list_user))
 
     def _get_localdict(self):
+        """Build the ``safe_eval`` context for the template's code.
+
+        :return: dict exposing ``document`` (this record) and ``env``
+        """
         return {
             "document": self,
             "env": self.env,
         }
 
     def _evaluate_python_code(self, python_condition):
+        """Evaluate ``python_condition`` and return its localdict.
+
+        :param python_condition: Python source expected to set
+            ``user`` in its execution scope
+        :return: the localdict after execution
+        :raises UserError: if evaluation raises any exception
+        """
         localdict = self._get_localdict()
         result = False
         try:
@@ -300,6 +352,11 @@ class MixinKPI(models.AbstractModel):
         return result
 
     def _prepare_kpi_appraisal_data(self, user):
+        """Build the ``mixin.kpi_appraisal`` values for ``user``.
+
+        :param user: ``res.users`` record the appraisal is created for
+        :return: dict of values for ``mixin.kpi_appraisal.create``
+        """
         self.ensure_one()
         data = {
             "kpi_id": self.id,
@@ -308,6 +365,14 @@ class MixinKPI(models.AbstractModel):
         return data
 
     def _prepare_kpi_appraisal_line_data(self, appraisal_id, kpi_line):
+        """Build the ``mixin.kpi_appraisal_line`` values for a line.
+
+        :param appraisal_id: ``mixin.kpi_appraisal`` record owning
+            the new line
+        :param kpi_line: ``mixin.kpi_line`` the appraisal line rates
+        :return: dict of values for
+            ``mixin.kpi_appraisal_line.create``
+        """
         self.ensure_one()
         data = {
             "kpi_appraisal_id": appraisal_id.id,
@@ -317,6 +382,12 @@ class MixinKPI(models.AbstractModel):
 
     @ssi_decorator.post_approve_action()
     def _create_kpi_appraisals(self):
+        """Create one appraisal per user, with a line per KPI item.
+
+        Runs after approval. Skips lines whose
+        ``realization_method`` is ``python`` since those do not
+        require a human appraiser.
+        """
         self.ensure_one()
         obj_kpi_appraisal = self.env[self.appraisal_ids._name]
         obj_kpi_appraisal_line = self.env[self.appraisal_ids.line_ids._name]
@@ -333,6 +404,11 @@ class MixinKPI(models.AbstractModel):
 
     @ssi_decorator.pre_cancel_action()
     def _10_remove_appraisal_ids(self):
+        """Remove appraisals before cancelling, blocking if any is done.
+
+        :raises UserError: if any linked appraisal already has state
+            ``done``
+        """
         self.ensure_one()
         check_appraisal = self.appraisal_ids.filtered(lambda x: x.state == "done")
         if check_appraisal:
@@ -344,6 +420,10 @@ class MixinKPI(models.AbstractModel):
 
     @ssi_decorator.pre_done_check()
     def _10_check_appraisal_state(self):
+        """Block ``done`` until every appraisal is completed.
+
+        :raises UserError: if any linked appraisal is not ``done``
+        """
         self.ensure_one()
         check = self.appraisal_ids.filtered(lambda x: x.state != "done")
         if check:
@@ -352,11 +432,16 @@ class MixinKPI(models.AbstractModel):
 
     @ssi_decorator.post_done_action()
     def _10_recompute_realization(self):
+        """Recompute realization/score once the document is done."""
         self.ensure_one()
         self.action_compute_realization()
 
     @ssi_decorator.pre_confirm_check()
     def _01_check_amount_weight(self):
+        """Block confirm unless total line weight is exactly 100%.
+
+        :raises UserError: if ``amount_weight`` is not ``100.0``
+        """
         self.ensure_one()
         strWarning = _("Total weight must be 100.0%")
         if self.amount_weight != 100.0:
@@ -367,6 +452,13 @@ class MixinKPI(models.AbstractModel):
         "date_end",
     )
     def _constrains_overlap(self):
+        """Forbid overlapping KPI periods for the same subject.
+
+        Delegates the overlap test to ``_check_overlap``, implemented
+        per concrete model (employee/department).
+
+        :raises UserError: if ``_check_overlap`` reports an overlap
+        """
         for record in self.sudo():
             if not record._check_overlap():
                 error_message = _(

@@ -8,7 +8,14 @@ from odoo.exceptions import UserError
 from odoo.addons.ssi_decorator import ssi_decorator
 
 
-class MixinKPIAppraisal(models.AbstractModel):
+class MixinKpiAppraisal(models.AbstractModel):
+    """
+    Abstract base for a single appraiser's review of a ``mixin.kpi``
+    document. Collects realization per KPI line from
+    ``mixin.kpi_appraisal_line`` records and, once confirmed, checks
+    realization limits before auto-approving.
+    """
+
     _name = "mixin.kpi_appraisal"
     _inherit = [
         "mixin.transaction_confirm",
@@ -64,7 +71,7 @@ class MixinKPIAppraisal(models.AbstractModel):
 
     @api.model
     def _get_policy_field(self):
-        res = super(MixinKPIAppraisal, self)._get_policy_field()
+        res = super(MixinKpiAppraisal, self)._get_policy_field()
         policy_field = [
             "confirm_ok",
             "approve_ok",
@@ -101,12 +108,29 @@ class MixinKPIAppraisal(models.AbstractModel):
 
     @api.model
     def create(self, vals):
+        """Create the appraisal, then recompute the parent KPI.
+
+        Overridden so that a newly created appraisal that already
+        carries ``line_ids`` immediately updates the parent
+        ``kpi_id`` realization/score.
+
+        :param vals: values for the new record
+        :return: the created ``mixin.kpi_appraisal`` record
+        """
         new_record = super().create(vals)
         if vals.get("line_ids"):
             new_record.sudo().kpi_id.action_compute_realization()
         return new_record
 
     def write(self, vals):
+        """Write the appraisal, then recompute the parent KPI.
+
+        Overridden so that editing ``line_ids`` refreshes the parent
+        ``kpi_id`` realization/score.
+
+        :param vals: values to write
+        :return: result of the parent ``write``
+        """
         res = super().write(vals)
         if vals.get("line_ids"):
             self.sudo().kpi_id.action_compute_realization()
@@ -114,6 +138,14 @@ class MixinKPIAppraisal(models.AbstractModel):
 
     @ssi_decorator.post_confirm_action()
     def _10_approve_data(self):
+        """Auto-approve the appraisal if every line is within limits.
+
+        Runs after confirm. Raises when a line's realization breaches
+        its configured realization limit; otherwise triggers
+        ``action_approve_approval``.
+
+        :raises UserError: if any line's realization is out of range
+        """
         self.ensure_one()
         for line in self.line_ids:
             if line._check_realization_limit():

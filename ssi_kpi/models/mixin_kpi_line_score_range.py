@@ -5,14 +5,18 @@
 from odoo import fields, models
 
 
-class KpiTemplateLineScoreRange(models.Model):
-    _name = "kpi_template_line_score_range"
-    _rec_name = "template_line_id"
-    _description = "KPI Template Line Score Range"
+class MixinKpiLineScoreRange(models.AbstractModel):
+    """
+    Abstract base for a scoring range attached to a KPI line.
+    Provides the ``min_value``/``max_value``/``score`` bracket used by
+    ``mixin.kpi_line`` when ``score_method`` is set to ``range``.
+    """
 
-    template_line_id = fields.Many2one(
-        string="#Template Line", comodel_name="kpi_template_line"
-    )
+    _name = "mixin.kpi_line_score_range"
+    _rec_name = "kpi_line_id"
+    _description = "Abstract Class KPI Line Score Range"
+
+    kpi_line_id = fields.Many2one(string="#KPI Line", comodel_name="mixin.kpi_line")
     min_value = fields.Float(
         string="Min. Value",
         required=True,

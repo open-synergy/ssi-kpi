@@ -5,7 +5,12 @@
 from odoo import fields, models
 
 
-class KPIScoreCategRange(models.Model):
+class KpiScoreCategRange(models.Model):
+    """
+    One min/max score bracket of a ``kpi_score_categ``, mapped to a
+    ``kpi_score_categ_range_value`` result label.
+    """
+
     _name = "kpi_score_categ_range"
     _rec_name = "categ_range_value_id"
     _description = "KPI Score Category Range"

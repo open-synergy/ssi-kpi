@@ -6,7 +6,14 @@ from odoo.exceptions import UserError
 from odoo.tools.safe_eval import safe_eval
 
 
-class MixinKPILine(models.AbstractModel):
+class MixinKpiLine(models.AbstractModel):
+    """
+    Abstract base for a single KPI item measured on a ``mixin.kpi``
+    document. Computes realization from either user appraisal or a
+    Python formula, turns it into a score, and weighs it into the
+    document final score.
+    """
+
     _name = "mixin.kpi_line"
     _description = "Abstract Class for KPI Line"
 
@@ -34,6 +41,12 @@ class MixinKPILine(models.AbstractModel):
         "realization_method",
     )
     def _compute_realization(self):
+        """Compute ``realization`` from appraisal or Python code.
+
+        Delegates to ``_get_realization_appraisal`` when
+        ``realization_method`` is ``user``, or to
+        ``_get_realization_python`` otherwise.
+        """
         for record in self:
             if record.realization_method == "user":
                 record.realization = record._get_realization_appraisal()
@@ -41,6 +54,11 @@ class MixinKPILine(models.AbstractModel):
                 record.realization = record._get_realization_python()
 
     def _get_realization_appraisal(self):
+        """Average the realization reported on appraisal lines.
+
+        :return: average realization across every ``mixin.kpi_appraisal``
+            linked to this line's ``kpi_id``
+        """
         self.ensure_one()
         result = 0
         obj_kpi_appraisal_line = self.env[self.kpi_id.appraisal_ids.line_ids._name]
@@ -57,6 +75,10 @@ class MixinKPILine(models.AbstractModel):
         return result
 
     def _get_localdict(self):
+        """Build the ``safe_eval`` context for ``python_code``.
+
+        :return: dict exposing ``env`` and ``document`` (this record)
+        """
         self.ensure_one()
         return {
             "env": self.env,
@@ -64,6 +86,11 @@ class MixinKPILine(models.AbstractModel):
         }
 
     def _get_realization_python(self):
+        """Evaluate ``python_code`` and return its ``result`` variable.
+
+        :return: value of ``result`` after executing ``python_code``
+        :raises UserError: if the code raises any exception
+        """
         self.ensure_one()
         res = False
         localdict = self._get_localdict()
@@ -106,6 +133,14 @@ class MixinKPILine(models.AbstractModel):
         "target",
     )
     def _compute_score(self):
+        """Turn ``realization`` into ``score`` per ``score_method``.
+
+        When there is no realization yet, ``lower is better`` lines
+        default to the maximum score (or 100 without a limit) and
+        every other method defaults to 0. Otherwise the score is
+        computed via ``_get_score`` and clamped by ``_get_score_limit``
+        when ``use_score_limit`` and the target is exceeded.
+        """
         for record in self:
             if record.realization:
                 record.score = record._get_score()
@@ -157,6 +192,11 @@ class MixinKPILine(models.AbstractModel):
         "score",
     )
     def _compute_final_score(self):
+        """Weigh ``score`` into ``final_score`` using ``weight``.
+
+        For ``range`` scoring, the score is first normalized against
+        the maximum score of the configured score ranges.
+        """
         for record in self:
             if record.score:
                 if record.score_method == "range":
@@ -186,6 +226,11 @@ result = 0.0""",
     )
 
     def _get_score(self):
+        """Compute the raw score from realization and target.
+
+        :return: score per ``score_method`` (``higher``/``lower``
+            formula, or ``_get_score_range`` lookup for ``range``)
+        """
         self.ensure_one()
         if self.score_method == "higher":
             score = (self.realization / self.target) * 100
@@ -196,6 +241,11 @@ result = 0.0""",
         return score
 
     def _get_score_limit(self, score):
+        """Clamp ``score`` between ``min_score_limit``/``max_score_limit``.
+
+        :param score: raw score to clamp
+        :return: clamped score
+        """
         self.ensure_one()
         # if self.score_method == "higher":
         #     score = (self.realization / self.target) * self.max_score_limit
@@ -212,6 +262,12 @@ result = 0.0""",
         return score
 
     def _get_score_range(self, realization):
+        """Look up the score bracket matching ``realization``.
+
+        :param realization: realization value to match
+        :return: ``score`` of the matching ``mixin.kpi_line_score_range``,
+            or ``0.0`` if none matches
+        """
         self.ensure_one()
         score = 0.0
         obj_score_range = self.env[self.score_range_ids._name]
@@ -226,6 +282,11 @@ result = 0.0""",
         return score
 
     def _get_max_score_range(self):
+        """Return the highest score among configured score ranges.
+
+        :return: maximum ``score`` across ``score_range_ids``, or
+            ``0.0`` if there is none
+        """
         self.ensure_one()
         max_score = 0.0
         obj_score_range = self.env[self.score_range_ids._name]
