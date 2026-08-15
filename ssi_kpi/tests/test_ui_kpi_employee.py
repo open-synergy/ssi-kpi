@@ -115,6 +115,15 @@ class TestUiKpiEmployee(HttpSavepointCase):
         # IK: docs/kpi_employee/02-edit.md -- Draft, already populated
         # once; the tour only needs to run Populate again.
         cls.kpi_edit = make_kpi_employee(cls.employee_edit)
+        # Give the pre-existing line different weight/target than the
+        # template (which is 100.0/100.0) so the tour has a genuine
+        # value delta to wait on after clicking Populate -- see
+        # odoo-development-ui-test skill Sec. P: a fixture line that
+        # already matches Populate's output makes a `:enabled`/
+        # data-row gate resolve before the button's write+reload
+        # cycle actually lands, and Save then races a still-running
+        # reload.
+        cls.kpi_edit.line_ids.write({"weight": 40.0, "target": 40.0})
 
         # IK: docs/kpi_employee/03-delete.md -- Draft, "/" number.
         cls.kpi_delete = make_kpi_employee(cls.employee_delete)

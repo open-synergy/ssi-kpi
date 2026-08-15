@@ -1,16 +1,16 @@
 # Edit KPI for Department
 
-> **Module:** ssi_kpi
-> **Model:** `kpi.department`
-> **Menu:** Human Resource > KPI > Departments
-> **Actor:** user in group *KPI Department — User*
-> **Requires:** `01-create`
+> **Module:** ssi_kpi\
+> **Model:** `kpi.department`\
+> **Menu:** Human Resource > KPI > Departments\
+> **Actor:** user in group KPI Department — User\
+> **Requires:** `01-create`\
 > **Inline Actions:** `action_populate_kpi` (Populate)
 
 ## Pre-Condition
 
 - **Record:** Status is **Draft**.
-- **Access:** User is in group *KPI Department — User*.
+- **Access:** User is in group _KPI Department — User_.
 
 ## Flow
 

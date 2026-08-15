@@ -1,16 +1,16 @@
 # Delete KPI for Department
 
-> **Module:** ssi_kpi
-> **Model:** `kpi.department`
-> **Menu:** Human Resource > KPI > Departments
-> **Actor:** user in group *KPI Department — User*
+> **Module:** ssi_kpi\
+> **Model:** `kpi.department`\
+> **Menu:** Human Resource > KPI > Departments\
+> **Actor:** user in group KPI Department — User\
 > **Requires:** `01-create`
 
 ## Pre-Condition
 
 - **Record:** Status is **Draft**.
 - **Record:** Document number is still **/** (not yet generated).
-- **Access:** User is in group *KPI Department — User*.
+- **Access:** User is in group _KPI Department — User_.
 
 ## Flow
 

@@ -1,10 +1,10 @@
 # Cancel KPI for Department
 
-> **Module:** ssi_kpi
-> **Model:** `kpi.department`
-> **Menu:** Human Resource > KPI > Departments
-> **Actor:** user in group *KPI Department — Validator*
-> **State:** `draft` | `confirm` | `open` | `done` | `terminate` → `cancel`
+> **Module:** ssi_kpi\
+> **Model:** `kpi.department`\
+> **Menu:** Human Resource > KPI > Departments\
+> **Actor:** user in group KPI Department — Validator\
+> **State:** `draft` | `confirm` | `open` | `done` | `terminate` → `cancel`\
 > **Requires:** `01-create`
 
 ## Pre-Condition
@@ -14,8 +14,8 @@
 - **Record:** No record in the **Appraisals** tab (`appraisal_ids`) has status **Done**
   — **Cancel** is blocked otherwise.
 - **Config:** The active `policy.template` grants `cancel_ok` for that state to the
-  actor's group (*KPI Department — Validator*).
-- **Access:** User is in group *KPI Department — Validator*.
+  actor's group (_KPI Department — Validator_).
+- **Access:** User is in group _KPI Department — Validator_.
 
 ## Flow
 

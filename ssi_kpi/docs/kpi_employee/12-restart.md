@@ -1,18 +1,18 @@
 # Restart KPI for Employee
 
-> **Module:** ssi_kpi
-> **Model:** `kpi.employee`
-> **Menu:** Human Resource > KPI > Employees
-> **Actor:** user in group *KPI Employee — Validator*
-> **State:** `cancel` | `reject` → `draft`
+> **Module:** ssi_kpi\
+> **Model:** `kpi.employee`\
+> **Menu:** Human Resource > KPI > Employees\
+> **Actor:** user in group KPI Employee — Validator\
+> **State:** `cancel` | `reject` → `draft`\
 > **Requires:** `10-cancel`
 
 ## Pre-Condition
 
 - **Record:** Status is **Cancelled** or **Reject**.
 - **Config:** The active `policy.template` grants `restart_ok` for that state to the
-  actor's group (*KPI Employee — Validator*).
-- **Access:** User is in group *KPI Employee — Validator*.
+  actor's group (_KPI Employee — Validator_).
+- **Access:** User is in group _KPI Employee — Validator_.
 
 ## Flow
 

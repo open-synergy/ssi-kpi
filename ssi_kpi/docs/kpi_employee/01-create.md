@@ -1,17 +1,17 @@
 # Create KPI for Employee
 
-> **Module:** ssi_kpi
-> **Model:** `kpi.employee`
-> **Menu:** Human Resource > KPI > Employees
-> **Actor:** user in group *KPI Employee — User*
-> **State:** `—` → `draft`
+> **Module:** ssi_kpi\
+> **Model:** `kpi.employee`\
+> **Menu:** Human Resource > KPI > Employees\
+> **Actor:** user in group KPI Employee — User\
+> **State:** `—` → `draft`\
 > **Inline Actions:** `action_populate_kpi` (Populate)
 
 ## Pre-Condition
 
-- **Data:** An active `kpi_template` record exists with **Type** *Employee* or *Both* —
+- **Data:** An active `kpi_template` record exists with **Type** _Employee_ or _Both_ —
   used by the **Populate** action to fill the **Details** tab.
-- **Access:** User is in group *KPI Employee — User*.
+- **Access:** User is in group _KPI Employee — User_.
 
 ## Flow
 
@@ -20,8 +20,8 @@
 3. Fill in the required fields:
    - **Employee**: Automatically filled from the current user's own employee record, if
      one exists. Otherwise, select the employee this KPI record is for.
-   - **Date Start** *(required)*: Start date of the evaluation period.
-   - **Date End** *(required)*: End date of the evaluation period.
+   - **Date Start** _(required)_: Start date of the evaluation period.
+   - **Date End** _(required)_: End date of the evaluation period.
    - **Template**: Select the `kpi_template` to use. Optional, but required before
      **Populate** (step 4) can fill the **Details** tab.
 4. On the **Details** tab, click **Populate** to rebuild the **Details** lines and the

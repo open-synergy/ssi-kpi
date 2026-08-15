@@ -183,14 +183,20 @@ odoo.define("ssi_kpi.kpi_department_tour", function (require) {
             },
             {
                 // Gate: the Details line already exists before this
-                // click (fixture is pre-populated), so a data-row
-                // gate would be false-positive here. Odoo 14
-                // disables a `type="object"` button synchronously on
-                // click and re-enables it only after the full
-                // write+reload cycle — `:enabled` cannot be true
-                // while the cycle is still running.
+                // click (fixture is pre-populated), so a bare
+                // data-row gate would be false-positive, and so is
+                // `button[...]:enabled` -- CI evidence showed it
+                // resolving before Populate's write+reload cycle
+                // landed, letting the next Save step race a still
+                // in-flight reload (odoo-development-ui-test skill
+                // Sec. P). The fixture line's weight/target (40.0)
+                // deliberately differ from the Template's (100.0), so
+                // this gate can wait on the row switching to the
+                // Template's value -- impossible to match before
+                // Populate actually replaces the line.
                 content: "Populate has finished",
-                trigger: "button[name='action_populate_kpi']:enabled",
+                trigger:
+                    ".o_field_x2many[name='line_ids'] .o_data_row:contains(TOUR KPI Item) .o_list_number:contains(100.00)",
                 run: function () {
                     // Assertion only.
                 },

@@ -1,17 +1,17 @@
 # Re-Compute KPI for Employee
 
-> **Module:** ssi_kpi
-> **Model:** `kpi.employee`
-> **Menu:** Human Resource > KPI > Employees
-> **Actor:** user in group *KPI Employee — User*
-> **State:** `open` → `open`
+> **Module:** ssi_kpi\
+> **Model:** `kpi.employee`\
+> **Menu:** Human Resource > KPI > Employees\
+> **Actor:** user in group KPI Employee — User\
+> **State:** `open` → `open`\
 > **Requires:** `05-approve`
 
 ## Pre-Condition
 
 - **Record:** Status is **In Progress** — the **Compute** button is only shown in this
   status.
-- **Access:** User is in group *KPI Employee — User*.
+- **Access:** User is in group _KPI Employee — User_.
 
 ## Flow
 

@@ -1,18 +1,18 @@
 # Terminate KPI for Employee
 
-> **Module:** ssi_kpi
-> **Model:** `kpi.employee`
-> **Menu:** Human Resource > KPI > Employees
-> **Actor:** user in group *KPI Employee — User*
-> **State:** `open` → `terminate`
+> **Module:** ssi_kpi\
+> **Model:** `kpi.employee`\
+> **Menu:** Human Resource > KPI > Employees\
+> **Actor:** user in group KPI Employee — User\
+> **State:** `open` → `terminate`\
 > **Requires:** `05-approve`
 
 ## Pre-Condition
 
 - **Record:** Status is **In Progress**.
-- **Config:** The active `policy.template` grants `terminate_ok` for state `open` to
-  the actor's group (*KPI Employee — User*).
-- **Access:** User is in group *KPI Employee — User*.
+- **Config:** The active `policy.template` grants `terminate_ok` for state `open` to the
+  actor's group (_KPI Employee — User_).
+- **Access:** User is in group _KPI Employee — User_.
 
 ## Flow
 

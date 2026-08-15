@@ -1,10 +1,10 @@
 # Confirm KPI for Employee
 
-> **Module:** ssi_kpi
-> **Model:** `kpi.employee`
-> **Menu:** Human Resource > KPI > Employees
-> **Actor:** user in group *KPI Employee — User*
-> **State:** `draft` → `confirm`
+> **Module:** ssi_kpi\
+> **Model:** `kpi.employee`\
+> **Menu:** Human Resource > KPI > Employees\
+> **Actor:** user in group KPI Employee — User\
+> **State:** `draft` → `confirm`\
 > **Requires:** `01-create`
 
 ## Pre-Condition
@@ -12,10 +12,10 @@
 - **Record:** Status is **Draft**.
 - **Record:** Total weight of the **Details** lines (`amount_weight`) equals 100%.
 - **Config:** The active `policy.template` for this model grants `confirm_ok` for state
-  `draft` to the actor's group (*KPI Employee — User*).
+  `draft` to the actor's group (_KPI Employee — User_).
 - **Config:** The active `approval.template` for this model matches this record and has
-  at least one approver group configured (*KPI Employee — Validator*).
-- **Access:** User is in group *KPI Employee — User*.
+  at least one approver group configured (_KPI Employee — Validator_).
+- **Access:** User is in group _KPI Employee — User_.
 
 ## Flow
 
@@ -27,5 +27,4 @@
 ## Post-Condition
 
 - Status changes to **Waiting for Approval**.
-- An approval record is created for the approver group defined by the approval
-  template.
+- An approval record is created for the approver group defined by the approval template.

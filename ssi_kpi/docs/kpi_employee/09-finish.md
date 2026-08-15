@@ -1,10 +1,10 @@
 # Finish KPI for Employee
 
-> **Module:** ssi_kpi
-> **Model:** `kpi.employee`
-> **Menu:** Human Resource > KPI > Employees
-> **Actor:** user in group *KPI Employee — User*
-> **State:** `open` → `done`
+> **Module:** ssi_kpi\
+> **Model:** `kpi.employee`\
+> **Menu:** Human Resource > KPI > Employees\
+> **Actor:** user in group KPI Employee — User\
+> **State:** `open` → `done`\
 > **Requires:** `05-approve`
 
 ## Pre-Condition
@@ -13,8 +13,8 @@
 - **Record:** Every record in the **Appraisals** tab (`appraisal_ids`) has status
   **Done**. **Done** is blocked otherwise.
 - **Config:** The active `policy.template` grants `done_ok` for state `open` to the
-  actor's group (*KPI Employee — User*).
-- **Access:** User is in group *KPI Employee — User*.
+  actor's group (_KPI Employee — User_).
+- **Access:** User is in group _KPI Employee — User_.
 
 ## Flow
 
