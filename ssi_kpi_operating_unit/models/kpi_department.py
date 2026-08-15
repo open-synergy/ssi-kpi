@@ -6,16 +6,14 @@ from odoo import models
 
 
 class KpiDepartment(models.Model):
+    """
+    Adds single operating unit scoping to department KPI documents.
+    Links each ``kpi.department`` record to the operating unit it
+    belongs to, so it can be filtered and access-controlled per unit.
+    """
+
     _name = "kpi.department"
     _inherit = [
         "kpi.department",
-        "mixin.single_operating_unit",
-    ]
-
-
-class KpiDepartmentAppraisal(models.Model):
-    _name = "kpi.department_appraisal"
-    _inherit = [
-        "kpi.department_appraisal",
         "mixin.single_operating_unit",
     ]
