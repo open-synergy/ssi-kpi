@@ -9,6 +9,18 @@ HR - Key Perfomance Indicator (KPI) + Operating Unit
 Adds Operating Unit (``operating_unit_id``) to the KPI Employee, KPI Employee
 Appraisal, KPI Department, and KPI Department Appraisal records.
 
+Work Instruction
+================
+
+KPI for Employee
+-----------------
+
+* `Create KPI for Employee <docs/kpi_employee/index.html>`_
+
+KPI for Department
+-------------------
+
+* `Create KPI for Department <docs/kpi_department/index.html>`_
 
 Bug Tracker
 ===========

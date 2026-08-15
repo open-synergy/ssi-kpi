@@ -12,14 +12,16 @@
     "depends": [
         "ssi_kpi",
         "ssi_operating_unit_mixin",
+        "web_tour",
     ],
     "data": [
         "security/res_group/kpi_employee.xml",
         "security/res_group/kpi_department.xml",
         "security/ir_rule/kpi_employee.xml",
         "security/ir_rule/kpi_department.xml",
-        "view/kpi_employee.xml",
-        "view/kpi_department.xml",
+        "views/kpi_employee.xml",
+        "views/kpi_department.xml",
+        "views/assets.xml",
     ],
     "demo": [],
 }

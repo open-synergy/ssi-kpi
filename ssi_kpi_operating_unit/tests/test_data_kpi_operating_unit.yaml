@@ -91,7 +91,7 @@ scenarios:
         values:
           name: "Test Employee KPI Appraisal OU"
 
-      - step: "Create parent KPI employee"
+      - step: "Create parent KPI employee with operating unit"
         action: "create"
         model: "kpi.employee"
         save_as: "kpi_employee"
@@ -100,23 +100,24 @@ scenarios:
           employee_id: "EVAL: registry['employee'].id"
           date_start: 2026-01-01
           date_end: 2026-12-31
+          operating_unit_id: "EVAL: registry['operating_unit'].id"
 
-      - step: "Create KPI employee appraisal with operating unit"
+      - step: "Create KPI employee appraisal with the same operating unit"
         action: "create"
         model: "kpi.employee_appraisal"
         save_as: "appraisal"
         as_user: "base.user_admin"
         values:
-          kpi_id: "EVAL: registry['kpi_employee'].id"
-          operating_unit_id: "EVAL: registry['operating_unit'].id"
+          kpi_id: "REC: kpi_employee.id"
+          operating_unit_id: "REC: kpi_employee.operating_unit_id.id"
 
-      - step: "Assert KPI employee appraisal has operating unit"
+      - step: "Assert appraisal operating unit matches its parent"
         action: "assert"
         target: "appraisal"
         asserts:
           operating_unit_id:
-            type: "value"
-            operator: "is_truthy"
+            type: "m2o"
+            expected: "REC: kpi_employee.operating_unit_id"
 
   - name: "KPI Department Appraisal - Create with Operating Unit"
     steps:
@@ -134,7 +135,7 @@ scenarios:
         values:
           name: "Test Department KPI Appraisal OU"
 
-      - step: "Create parent KPI department"
+      - step: "Create parent KPI department with operating unit"
         action: "create"
         model: "kpi.department"
         save_as: "kpi_department"
@@ -143,20 +144,131 @@ scenarios:
           department_id: "EVAL: registry['department'].id"
           date_start: 2026-01-01
           date_end: 2026-12-31
+          operating_unit_id: "EVAL: registry['operating_unit'].id"
 
-      - step: "Create KPI department appraisal with operating unit"
+      - step: "Create KPI department appraisal with the same operating unit"
         action: "create"
         model: "kpi.department_appraisal"
         save_as: "appraisal"
         as_user: "base.user_admin"
         values:
-          kpi_id: "EVAL: registry['kpi_department'].id"
-          operating_unit_id: "EVAL: registry['operating_unit'].id"
+          kpi_id: "REC: kpi_department.id"
+          operating_unit_id: "REC: kpi_department.operating_unit_id.id"
 
-      - step: "Assert KPI department appraisal has operating unit"
+      - step: "Assert appraisal operating unit matches its parent"
         action: "assert"
         target: "appraisal"
         asserts:
           operating_unit_id:
-            type: "value"
-            operator: "is_truthy"
+            type: "m2o"
+            expected: "REC: kpi_department.operating_unit_id"
+
+  - name: "KPI Employee - Operating Unit Record Rule Blocks Outsider"
+    steps:
+      - step: "Get main company operating unit"
+        action: "search"
+        model: "operating.unit"
+        domain: [["company_id", "=", "REF: base.main_company"]]
+        save_as: "operating_unit"
+        limit: 1
+
+      - step: "Create employee"
+        action: "create"
+        model: "hr.employee"
+        save_as: "employee"
+        values:
+          name: "Test Employee KPI OU Rule"
+
+      - step: "Create KPI employee with operating unit"
+        action: "create"
+        model: "kpi.employee"
+        save_as: "kpi_employee"
+        as_user: "base.user_admin"
+        values:
+          employee_id: "REC: employee.id"
+          date_start: 2026-01-01
+          date_end: 2026-12-31
+          operating_unit_id: "REC: operating_unit.id"
+
+      - step: "Create user outside the record's operating unit"
+        action: "create"
+        model: "res.users"
+        save_as: "ou_outsider"
+        as_user: "base.user_admin"
+        values:
+          name: "KPI Employee OU Outsider"
+          login: "kpi_employee_ou_outsider@example.com"
+          groups_id:
+            [
+              [
+                6,
+                0,
+                [
+                  "REF: base.group_user",
+                  "REF: ssi_kpi_operating_unit.kpi_employee_ou_group",
+                ],
+              ],
+            ]
+
+      - step: "Search the record as the outsider user"
+        action: "search"
+        model: "kpi.employee"
+        domain: [["id", "=", "REC: kpi_employee.id"]]
+        save_as: "outsider_result"
+        as_user: "ou_outsider"
+        expect_count: 0
+
+  - name: "KPI Department - Operating Unit Record Rule Blocks Outsider"
+    steps:
+      - step: "Get main company operating unit"
+        action: "search"
+        model: "operating.unit"
+        domain: [["company_id", "=", "REF: base.main_company"]]
+        save_as: "operating_unit"
+        limit: 1
+
+      - step: "Create department"
+        action: "create"
+        model: "hr.department"
+        save_as: "department"
+        values:
+          name: "Test Department KPI OU Rule"
+
+      - step: "Create KPI department with operating unit"
+        action: "create"
+        model: "kpi.department"
+        save_as: "kpi_department"
+        as_user: "base.user_admin"
+        values:
+          department_id: "REC: department.id"
+          date_start: 2026-01-01
+          date_end: 2026-12-31
+          operating_unit_id: "REC: operating_unit.id"
+
+      - step: "Create user outside the record's operating unit"
+        action: "create"
+        model: "res.users"
+        save_as: "ou_outsider"
+        as_user: "base.user_admin"
+        values:
+          name: "KPI Department OU Outsider"
+          login: "kpi_department_ou_outsider@example.com"
+          groups_id:
+            [
+              [
+                6,
+                0,
+                [
+                  "REF: base.group_user",
+                  "REF: ssi_kpi_operating_unit.kpi_department_ou_group",
+                ],
+              ],
+            ]
+
+      - step: "Search the record as the outsider user"
+        action: "search"
+        model: "kpi.department"
+        domain: [["id", "=", "REC: kpi_department.id"]]
+        save_as: "outsider_result"
+        as_user: "ou_outsider"
+        expect_count: 0

@@ -4,5 +4,7 @@
 
 from . import (
     kpi_employee,
+    kpi_employee_appraisal,
     kpi_department,
+    kpi_department_appraisal,
 )
