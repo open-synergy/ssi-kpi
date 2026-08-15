@@ -3,16 +3,20 @@
      Copyright 2026 PT. Simetri Sinergi Indonesia
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
 <odoo>
-    <template id="assets_tests" name="ssi_kpi assets tests" inherit_id="web.assets_tests">
+    <template
+        id="assets_tests"
+        name="ssi_kpi assets tests"
+        inherit_id="web.assets_tests"
+    >
         <xpath expr="." position="inside">
             <script
-                    type="text/javascript"
-                    src="/ssi_kpi/static/tests/tours/kpi_employee_tour.js"
-                />
+                type="text/javascript"
+                src="/ssi_kpi/static/tests/tours/kpi_employee_tour.js"
+            />
             <script
-                    type="text/javascript"
-                    src="/ssi_kpi/static/tests/tours/kpi_department_tour.js"
-                />
+                type="text/javascript"
+                src="/ssi_kpi/static/tests/tours/kpi_department_tour.js"
+            />
         </xpath>
     </template>
 </odoo>

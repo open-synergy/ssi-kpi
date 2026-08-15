@@ -592,6 +592,10 @@ scenarios:
         target: "kpi_employee"
         method: "action_confirm"
         as_user: "base.user_admin"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
 
       - step: "Approve KPI employee"
         action: "call"

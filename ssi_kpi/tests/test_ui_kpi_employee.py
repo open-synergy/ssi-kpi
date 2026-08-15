@@ -136,6 +136,13 @@ class TestUiKpiEmployee(HttpSavepointCase):
         # is a member of the configured approver group).
         cls.kpi_finish = make_kpi_employee(cls.employee_finish)
         cls.kpi_finish.action_confirm()
+        # `approve_ok` is a non-stored compute that only depends on
+        # `policy_template_id`, not `state` -- Odoo does not
+        # invalidate it when Confirm changes the state, so it must be
+        # dropped by hand before Approve reads it (see
+        # `_check_approve_policy`), same as the YAML DSL's
+        # `auto_refresh` does for its own steps.
+        cls.kpi_finish.invalidate_cache(ids=cls.kpi_finish.ids)
         cls.kpi_finish.action_approve_approval()
         # 09-finish Pre-Condition: every appraisal is Done. The
         # appraisal model has no IK/tour of its own (out of scope for
@@ -145,10 +152,12 @@ class TestUiKpiEmployee(HttpSavepointCase):
 
         cls.kpi_terminate = make_kpi_employee(cls.employee_terminate)
         cls.kpi_terminate.action_confirm()
+        cls.kpi_terminate.invalidate_cache(ids=cls.kpi_terminate.ids)
         cls.kpi_terminate.action_approve_approval()
 
         cls.kpi_compute = make_kpi_employee(cls.employee_compute)
         cls.kpi_compute.action_confirm()
+        cls.kpi_compute.invalidate_cache(ids=cls.kpi_compute.ids)
         cls.kpi_compute.action_approve_approval()
 
         # IK: docs/kpi_employee/10-cancel.md -- Draft is one of the
