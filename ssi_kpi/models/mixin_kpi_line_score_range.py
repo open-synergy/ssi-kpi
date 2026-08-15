@@ -5,7 +5,13 @@
 from odoo import fields, models
 
 
-class MixinKPILineScoreRange(models.AbstractModel):
+class MixinKpiLineScoreRange(models.AbstractModel):
+    """
+    Abstract base for a scoring range attached to a KPI line.
+    Provides the ``min_value``/``max_value``/``score`` bracket used by
+    ``mixin.kpi_line`` when ``score_method`` is set to ``range``.
+    """
+
     _name = "mixin.kpi_line_score_range"
     _rec_name = "kpi_line_id"
     _description = "Abstract Class KPI Line Score Range"

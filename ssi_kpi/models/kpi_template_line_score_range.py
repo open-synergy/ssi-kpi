@@ -6,6 +6,12 @@ from odoo import fields, models
 
 
 class KpiTemplateLineScoreRange(models.Model):
+    """
+    Score range bracket for a ``kpi_template_line``. Cloned into a
+    ``mixin.kpi_line_score_range`` record whenever the template line
+    is applied to a KPI document.
+    """
+
     _name = "kpi_template_line_score_range"
     _rec_name = "template_line_id"
     _description = "KPI Template Line Score Range"

@@ -19,6 +19,39 @@ To install this module, you need to:
 5.  Search For *HR - Key Perfomance Indicator (KPI)*
 6.  Install the module
 
+Work Instruction
+================
+
+KPI for Employee
+-----------------
+
+* `Create KPI for Employee <docs/kpi_employee/index.html>`_
+* `Edit KPI for Employee <docs/kpi_employee/index.html>`_
+* `Delete KPI for Employee <docs/kpi_employee/index.html>`_
+* `Confirm KPI for Employee <docs/kpi_employee/index.html>`_
+* `Approve KPI for Employee <docs/kpi_employee/index.html>`_
+* `Reject KPI for Employee <docs/kpi_employee/index.html>`_
+* `Finish KPI for Employee <docs/kpi_employee/index.html>`_
+* `Cancel KPI for Employee <docs/kpi_employee/index.html>`_
+* `Terminate KPI for Employee <docs/kpi_employee/index.html>`_
+* `Restart KPI for Employee <docs/kpi_employee/index.html>`_
+* `Re-Compute KPI for Employee <docs/kpi_employee/index.html>`_
+
+KPI for Department
+-------------------
+
+* `Create KPI for Department <docs/kpi_department/index.html>`_
+* `Edit KPI for Department <docs/kpi_department/index.html>`_
+* `Delete KPI for Department <docs/kpi_department/index.html>`_
+* `Confirm KPI for Department <docs/kpi_department/index.html>`_
+* `Approve KPI for Department <docs/kpi_department/index.html>`_
+* `Reject KPI for Department <docs/kpi_department/index.html>`_
+* `Finish KPI for Department <docs/kpi_department/index.html>`_
+* `Cancel KPI for Department <docs/kpi_department/index.html>`_
+* `Terminate KPI for Department <docs/kpi_department/index.html>`_
+* `Restart KPI for Department <docs/kpi_department/index.html>`_
+* `Re-Compute KPI for Department <docs/kpi_department/index.html>`_
+
 Bug Tracker
 ===========
 

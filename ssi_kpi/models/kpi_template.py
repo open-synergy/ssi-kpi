@@ -7,6 +7,13 @@ from odoo.exceptions import UserError
 
 
 class KpiTemplate(models.Model):
+    """
+    Reusable KPI blueprint. ``action_populate_kpi`` on ``mixin.kpi``
+    clones its ``line_ids`` into a KPI document's lines, and
+    ``appraisal_selection_method`` decides which users appraise a
+    document created from it.
+    """
+
     _name = "kpi_template"
     _inherit = ["mixin.master_data"]
     _description = "KPI Template"
@@ -79,6 +86,7 @@ user = []""",
         "line_ids.weight",
     )
     def _compute_amount_weight(self):
+        """Sum ``weight`` across ``line_ids`` into ``amount_weight``."""
         for record in self:
             total_weight = 0.0
             for line in record.line_ids:
@@ -89,6 +97,10 @@ user = []""",
         "amount_weight",
     )
     def _check_amount_weight(self):
+        """Forbid a template whose lines weigh more than 100%.
+
+        :raises UserError: if ``amount_weight`` exceeds ``100.0``
+        """
         for record in self:
             strWarning = _("Total weight cannot be greater than 100.0%")
             if record.amount_weight > 100.0:

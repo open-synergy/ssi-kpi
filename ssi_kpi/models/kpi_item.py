@@ -6,6 +6,12 @@ from odoo import fields, models
 
 
 class KpiItem(models.Model):
+    """
+    Master data for a KPI item (e.g. "Sales Growth", "On-Time
+    Delivery"). Referenced by KPI template lines and KPI lines to
+    identify what is being measured.
+    """
+
     _name = "kpi_item"
     _inherit = ["mixin.master_data"]
     _description = "KPI Item"
