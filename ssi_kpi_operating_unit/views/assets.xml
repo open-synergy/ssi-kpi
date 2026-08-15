@@ -12,11 +12,11 @@
         <script
                 type="text/javascript"
                 src="/ssi_kpi_operating_unit/static/tests/tours/kpi_employee_tour.js"
-            ></script>
+            />
         <script
                 type="text/javascript"
                 src="/ssi_kpi_operating_unit/static/tests/tours/kpi_department_tour.js"
-            ></script>
+            />
     </xpath>
 </template>
 </odoo>

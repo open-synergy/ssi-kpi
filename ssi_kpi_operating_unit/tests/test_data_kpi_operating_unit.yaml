@@ -209,6 +209,13 @@ scenarios:
                 ],
               ],
             ]
+          # Without this, `assigned_operating_unit_ids` defaults to
+          # the ACTING user's (base.user_admin's) default operating
+          # unit (operating_unit.operating_unit_default_get() reads
+          # self.env.user, not the record being created) -- which is
+          # the SAME operating unit as "operating_unit" above, making
+          # the outsider not actually an outsider.
+          assigned_operating_unit_ids: [[6, 0, []]]
 
       - step: "Search the record as the outsider user"
         action: "search"
@@ -264,6 +271,13 @@ scenarios:
                 ],
               ],
             ]
+          # Without this, `assigned_operating_unit_ids` defaults to
+          # the ACTING user's (base.user_admin's) default operating
+          # unit (operating_unit.operating_unit_default_get() reads
+          # self.env.user, not the record being created) -- which is
+          # the SAME operating unit as "operating_unit" above, making
+          # the outsider not actually an outsider.
+          assigned_operating_unit_ids: [[6, 0, []]]
 
       - step: "Search the record as the outsider user"
         action: "search"
